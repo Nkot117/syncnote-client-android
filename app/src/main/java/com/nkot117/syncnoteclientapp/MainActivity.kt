@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.nkot117.syncnoteclientapp.ui.login.LoginScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,25 +17,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             SyncnoteClientAppTheme {
-                Greeting(
-                    name = "Android")
+                SyncnoteClientApp()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SyncnoteClientAppTheme {
-        Greeting("Android")
-    }
+fun SyncnoteClientApp(modifier: Modifier = Modifier) {
+    LoginScreen(modifier = modifier)
 }
