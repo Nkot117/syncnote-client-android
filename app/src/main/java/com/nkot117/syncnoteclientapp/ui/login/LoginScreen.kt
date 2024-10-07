@@ -112,7 +112,9 @@ fun LoginScreen(
             CircularProgressIndicator()
         } else {
             Button(
-                onClick = { },
+                onClick = {
+                    viewModel.onLoginClicked()
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium,
                 colors = ButtonDefaults.buttonColors(
