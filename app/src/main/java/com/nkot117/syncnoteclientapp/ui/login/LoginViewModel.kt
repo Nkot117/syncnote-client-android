@@ -19,10 +19,10 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Loading)
+    private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Ideal)
     val uiState : StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    private val _loginFormData = MutableStateFlow(LoginFormData("", ""))
+    private val _loginFormData = MutableStateFlow(LoginFormData("", "", emptyMap()))
     val loginFormData : StateFlow<LoginFormData> = _loginFormData.asStateFlow()
 
     fun onEmailChanged(email: String) {
@@ -34,6 +34,10 @@ class LoginViewModel @Inject constructor(
     }
 
     fun onLoginClicked() {
+        if(!validateFormData(loginFormData.value)) {
+            return
+        }
+
         _uiState.value = LoginUiState.Loading
 
         viewModelScope.launch {
@@ -41,11 +45,33 @@ class LoginViewModel @Inject constructor(
             val result = authRepository.login(LoginData(email = loginData.email, password = loginData.password))
             if(result is AuthResult.Success) {
                 val data = result.userData
+                _uiState.value = LoginUiState.Success
                 Log.d("LoginViewModel", "onLoginClicked: $data")
             } else {
-                val data = (result as AuthResult.Failure).errorBody
+                val data = (result as AuthResult.Failure).errorMessage
+                _uiState.value = LoginUiState.Error(data.message)
                 Log.d("LoginViewModel", "onLoginClicked: ${data.message}")
             }
         }
+    }
+
+    private fun validateFormData(loginData: LoginFormData): Boolean {
+        val email = loginData.email
+        val password = loginData.password
+        val errorMessage = mutableMapOf<String, String>()
+
+        _loginFormData.value = loginData.copy(errorMessage = emptyMap())
+
+        if(email.isEmpty()) {
+            errorMessage["email"] = "メールアドレスを入力してください"
+        }
+
+        if(password.isEmpty()) {
+            errorMessage["password"] = "パスワードを入力してください"
+        }
+
+        _loginFormData.value = loginFormData.value.copy(errorMessage = errorMessage)
+
+        return errorMessage.isEmpty()
     }
 }

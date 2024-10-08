@@ -3,7 +3,7 @@ package com.nkot117.syncnoteclientapp.data
 
 sealed class AuthResult {
     data class Success(val userData: UserData) : AuthResult()
-    data class Failure(val errorBody: ErrorBody) : AuthResult()
+    data class Failure(val errorMessage: ErrorMessage) : AuthResult()
 }
 
 data class UserData(
@@ -12,6 +12,6 @@ data class UserData(
     val token: String
 )
 
-data class ErrorBody(
+data class ErrorMessage(
     val message: String
 )
