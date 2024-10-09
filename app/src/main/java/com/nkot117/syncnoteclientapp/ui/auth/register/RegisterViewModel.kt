@@ -70,11 +70,17 @@ class RegisterViewModel @Inject constructor(
     }
 
     private fun validateFormData(registerFormData: RegisterFormData): Boolean {
+        val name = registerFormData.name
         val email = registerFormData.email
         val password = registerFormData.password
+        val confirmPassword = registerFormData.confirmPassword
         val errorMessage = mutableMapOf<String, String>()
 
         _registerFormData.value = registerFormData.copy(errorMessage = emptyMap())
+
+        if(name.isEmpty()) {
+            errorMessage["name"] = "名前を入力してください"
+        }
 
         if (email.isEmpty()) {
             errorMessage["email"] = "メールアドレスを入力してください"
@@ -82,6 +88,14 @@ class RegisterViewModel @Inject constructor(
 
         if (password.isEmpty()) {
             errorMessage["password"] = "パスワードを入力してください"
+        }
+
+        if (confirmPassword.isEmpty()) {
+            errorMessage["confirmPassword"] = "確認パスワードを入力してください"
+        }
+
+        if (password != confirmPassword) {
+            errorMessage["confirmPassword"] = "パスワードが一致しません"
         }
 
         _registerFormData.value = registerFormData.copy(errorMessage = errorMessage)

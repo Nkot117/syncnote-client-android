@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -50,142 +51,192 @@ fun RegisterScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val focusManager = LocalFocusManager.current
-        Text(
-            text = "サインアップ",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.primary
-        )
 
-        Spacer(modifier = Modifier.height(14.dp))
+        when(registerUiState) {
+            is RegisterUiState.Ideal,
+            is RegisterUiState.Error -> {
+                val focusManager = LocalFocusManager.current
+                Text(
+                    text = "サインアップ",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-        OutlinedTextField(
-            value = registerFormData.name,
-            label = { Text("名前") },
-            placeholder = {
-                Text("your@email.com")
-            },
-            singleLine = true,
-            onValueChange = {
-                viewModel.onNameChanged(it)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus((FocusDirection.Next))
+                Spacer(modifier = Modifier.height(14.dp))
+
+                OutlinedTextField(
+                    value = registerFormData.name,
+                    label = { Text("名前") },
+                    placeholder = {
+                        Text("user name")
+                    },
+                    singleLine = true,
+                    onValueChange = {
+                        viewModel.onNameChanged(it)
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus((FocusDirection.Next))
+                        }
+                    ),
+                    isError = registerFormData.errorMessage.containsKey("name"),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (registerFormData.errorMessage.containsKey("name")) {
+                    Text(
+                        text = registerFormData.errorMessage["name"] ?: "",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = registerFormData.email,
-            label = { Text("メールアドレス") },
-            placeholder = {
-                Text("your@email.com")
-            },
-            singleLine = true,
-            onValueChange = {
-                viewModel.onEmailChanged(it)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Email,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus((FocusDirection.Next))
+                OutlinedTextField(
+                    value = registerFormData.email,
+                    label = { Text("メールアドレス") },
+                    placeholder = {
+                        Text("your@email.com")
+                    },
+                    singleLine = true,
+                    onValueChange = {
+                        viewModel.onEmailChanged(it)
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus((FocusDirection.Next))
+                        }
+                    ),
+                    isError = registerFormData.errorMessage.containsKey("email"),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (registerFormData.errorMessage.containsKey("email")) {
+                    Text(
+                        text = registerFormData.errorMessage["email"] ?: "",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            ),
-            modifier = Modifier.fillMaxWidth()
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = registerFormData.password,
-            label = { Text("パスワード") },
-            placeholder = {
-                Text("*****")
-            },
-            singleLine = true,
-            onValueChange = {
-                viewModel.onPasswordChanged(it)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Next
-            ),
-            keyboardActions = KeyboardActions(
-                onNext = {
-                    focusManager.moveFocus((FocusDirection.Next))
+                OutlinedTextField(
+                    value = registerFormData.password,
+                    label = { Text("パスワード") },
+                    placeholder = {
+                        Text("*****")
+                    },
+                    singleLine = true,
+                    onValueChange = {
+                        viewModel.onPasswordChanged(it)
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusManager.moveFocus((FocusDirection.Next))
+                        }
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = registerFormData.errorMessage.containsKey("password"),
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                if (registerFormData.errorMessage.containsKey("password")) {
+                    Text(
+                        text = registerFormData.errorMessage["password"] ?: "",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            ),
-            visualTransformation = PasswordVisualTransformation(),
 
-            modifier = Modifier.fillMaxWidth(),
-        )
+                Spacer(modifier = Modifier.height(8.dp))
 
-        Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = registerFormData.confirmPassword,
+                    label = { Text("確認パスワード") },
+                    placeholder = {
+                        Text("*****")
+                    },
+                    singleLine = true,
+                    onValueChange = {
+                        viewModel.onConfirmPasswordChanged(it)
+                    },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Password,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                        }
+                    ),
+                    visualTransformation = PasswordVisualTransformation(),
+                    isError = registerFormData.errorMessage.containsKey("confirmPassword"),
+                    modifier = Modifier.fillMaxWidth(),
+                )
 
-        OutlinedTextField(
-            value = registerFormData.confirmPassword,
-            label = { Text("確認パスワード") },
-            placeholder = {
-                Text("*****")
-            },
-            singleLine = true,
-            onValueChange = {
-                viewModel.onConfirmPasswordChanged(it)
-            },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
+                if (registerFormData.errorMessage.containsKey("confirmPassword")) {
+                    Text(
+                        text = registerFormData.errorMessage["confirmPassword"] ?: "",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
-            ),
-            visualTransformation = PasswordVisualTransformation(),
 
-            modifier = Modifier.fillMaxWidth(),
-        )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = {
+                        viewModel.onSignupClicked()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.medium,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text("サインアップ")
+                }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                viewModel.onSignupClicked()
-            },
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.medium,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text("サインアップ")
+                if (false) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("", color = Color.Red)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                ClickableText(
+                    text = AnnotatedString("ログインはこちら"),
+                    style = TextStyle(
+                        color = Color.Blue,
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    onClick = { }
+                )
+            }
+            is RegisterUiState.Loading -> {
+                CircularProgressIndicator()
+            }
+
+            is RegisterUiState.Success -> {
+                Text("サインアップ成功")
+            }
         }
-
-
-        if (false) {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("", color = Color.Red)
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        ClickableText(
-            text = AnnotatedString("ログインはこちら"),
-            style = TextStyle(
-                color = Color.Blue,
-                textDecoration = TextDecoration.Underline
-            ),
-            onClick = { }
-        )
     }
 }
