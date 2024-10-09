@@ -84,4 +84,7 @@ dependencies {
     // Moshi
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
+
+    // Navigation
+    implementation(libs.androidx.navigation.compose)
 }

@@ -38,6 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 @Composable
 @Preview(showBackground = true)
 fun RegisterScreen(
+    moveLoginScreen: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
@@ -227,7 +228,9 @@ fun RegisterScreen(
                         color = Color.Blue,
                         textDecoration = TextDecoration.Underline
                     ),
-                    onClick = { }
+                    onClick = {
+                        moveLoginScreen()
+                    }
                 )
             }
             is RegisterUiState.Loading -> {
