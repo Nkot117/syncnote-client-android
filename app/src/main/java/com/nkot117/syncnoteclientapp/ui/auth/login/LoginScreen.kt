@@ -96,10 +96,6 @@ fun LoginScreen(
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-
-                if (false) {
-                    CircularProgressIndicator()
-                } else {
                     Button(
                         onClick = {
                             viewModel.onLoginClicked()
@@ -112,12 +108,6 @@ fun LoginScreen(
                     ) {
                         Text("ログイン")
                     }
-                }
-
-                if (false) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("", color = Color.Red)
-                }
 
                 Spacer(modifier = Modifier.height(24.dp))
 

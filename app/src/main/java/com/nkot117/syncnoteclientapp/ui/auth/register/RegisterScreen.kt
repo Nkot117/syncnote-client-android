@@ -35,7 +35,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 
-
 @Composable
 fun RegisterScreen(
     moveLoginScreen: () -> Unit,
@@ -169,6 +168,7 @@ fun RegisterScreen(
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
+
                 Button(
                     onClick = {
                         viewModel.onSignupClicked()
@@ -180,11 +180,6 @@ fun RegisterScreen(
                     )
                 ) {
                     Text("サインアップ")
-                }
-
-                if (false) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("", color = Color.Red)
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
