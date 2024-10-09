@@ -8,13 +8,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,12 +23,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
+import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 
 @Composable
 fun LoginScreen(
@@ -61,72 +59,41 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = inputFormData.email,
-                    label = { Text("メールアドレス") },
-                    placeholder = {
-                        Text("your@email.com")
-                    },
-                    singleLine = true,
+                    label = "メールアドレス",
+                    placeholder = "your@email.com",
+                    isError = inputFormData.errorMessage.containsKey("email"),
+                    errorMessage = inputFormData.errorMessage["email"],
                     onValueChange = {
                         viewModel.onEmailChanged(it)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus((FocusDirection.Next))
-                        }
-                    ),
-                    isError = inputFormData.errorMessage.containsKey("email"),
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                    onImeAction = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    },
                     modifier = Modifier.fillMaxWidth()
                 )
 
-                if (inputFormData.errorMessage.containsKey("email")) {
-                    Text(
-                        text = inputFormData.errorMessage["email"] ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                CustomOutlinedPasswordTextField(
                     value = inputFormData.password,
-                    label = { Text("パスワード") },
-                    placeholder = {
-                        Text("*****")
-                    },
-                    singleLine = true,
+                    label = "パスワード",
+                    placeholder = "*****",
+                    isError = inputFormData.errorMessage.containsKey("password"),
+                    errorMessage = inputFormData.errorMessage["password"],
                     onValueChange = {
                         viewModel.onPasswordChanged(it)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                        }
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    isError = inputFormData.errorMessage.containsKey("password"),
-                    modifier = Modifier.fillMaxWidth(),
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                    onImeAction = {
+                        focusManager.clearFocus()
+                    },
+                    modifier = Modifier.fillMaxWidth()
                 )
-
-                if (inputFormData.errorMessage.containsKey("password")) {
-                    Text(
-                        text = inputFormData.errorMessage["password"] ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -175,6 +142,4 @@ fun LoginScreen(
             }
         }
     }
-
-
 }

@@ -30,9 +30,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
+import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 
 
 @Composable
@@ -64,108 +65,75 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = registerFormData.name,
-                    label = { Text("名前") },
-                    placeholder = {
-                        Text("user name")
-                    },
-                    singleLine = true,
+                    label = "名前",
+                    placeholder = "user name",
+                    isError = registerFormData.errorMessage.containsKey("name"),
+                    errorMessage = registerFormData.errorMessage["name"],
                     onValueChange = {
                         viewModel.onNameChanged(it)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus((FocusDirection.Next))
-                        }
-                    ),
-                    isError = registerFormData.errorMessage.containsKey("name"),
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next,
+                    onImeAction = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
                 )
-
-                if (registerFormData.errorMessage.containsKey("name")) {
-                    Text(
-                        text = registerFormData.errorMessage["name"] ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                CustomOutlinedTextField(
                     value = registerFormData.email,
-                    label = { Text("メールアドレス") },
-                    placeholder = {
-                        Text("your@email.com")
-                    },
-                    singleLine = true,
+                    label = "メールアドレス",
+                    placeholder = "your@email.com",
+                    isError = registerFormData.errorMessage.containsKey("email"),
+                    errorMessage = registerFormData.errorMessage["email"],
                     onValueChange = {
                         viewModel.onEmailChanged(it)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus((FocusDirection.Next))
-                        }
-                    ),
-                    isError = registerFormData.errorMessage.containsKey("email"),
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next,
+                    onImeAction = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
                 )
-
-                if (registerFormData.errorMessage.containsKey("email")) {
-                    Text(
-                        text = registerFormData.errorMessage["email"] ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
+                CustomOutlinedPasswordTextField(
                     value = registerFormData.password,
-                    label = { Text("パスワード") },
-                    placeholder = {
-                        Text("*****")
-                    },
-                    singleLine = true,
+                    label = "パスワード",
+                    placeholder = "*****",
+                    isError = registerFormData.errorMessage.containsKey("password"),
+                    errorMessage = registerFormData.errorMessage["password"],
                     onValueChange = {
                         viewModel.onPasswordChanged(it)
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Password,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusManager.moveFocus((FocusDirection.Next))
-                        }
-                    ),
-                    visualTransformation = PasswordVisualTransformation(),
-                    isError = registerFormData.errorMessage.containsKey("password"),
-                    modifier = Modifier.fillMaxWidth(),
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Next,
+                    onImeAction = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
                 )
 
-                if (registerFormData.errorMessage.containsKey("password")) {
-                    Text(
-                        text = registerFormData.errorMessage["password"] ?: "",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
                 Spacer(modifier = Modifier.height(8.dp))
+
+                CustomOutlinedPasswordTextField(
+                    value = registerFormData.confirmPassword,
+                    label = "確認パスワード",
+                    placeholder = "*****",
+                    isError = registerFormData.errorMessage.containsKey("confirmPassword"),
+                    errorMessage = registerFormData.errorMessage["confirmPassword"],
+                    onValueChange = {
+                        viewModel.onConfirmPasswordChanged(it)
+                    },
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done,
+                    onImeAction = {
+                        focusManager.clearFocus()
+                    }
+                )
 
                 OutlinedTextField(
                     value = registerFormData.confirmPassword,
