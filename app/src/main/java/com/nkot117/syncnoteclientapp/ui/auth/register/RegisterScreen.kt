@@ -16,6 +16,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -29,11 +31,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
 @Preview(showBackground = true)
-fun RegisterScreen(modifier: Modifier = Modifier) {
+fun RegisterScreen(
+    viewModel: RegisterViewModel = hiltViewModel(),
+    modifier: Modifier = Modifier
+) {
+    val registerUiState by viewModel.uiState.collectAsState()
+    val registerFormData by viewModel.registerFormData.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -51,14 +60,38 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(14.dp))
 
         OutlinedTextField(
-            value = "",
+            value = registerFormData.name,
+            label = { Text("名前") },
+            placeholder = {
+                Text("your@email.com")
+            },
+            singleLine = true,
+            onValueChange = {
+                viewModel.onNameChanged(it)
+            },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus((FocusDirection.Next))
+                }
+            ),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = registerFormData.email,
             label = { Text("メールアドレス") },
             placeholder = {
                 Text("your@email.com")
             },
             singleLine = true,
             onValueChange = {
-
+                viewModel.onEmailChanged(it)
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Email,
@@ -75,21 +108,22 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = "",
+            value = registerFormData.password,
             label = { Text("パスワード") },
             placeholder = {
                 Text("*****")
             },
             singleLine = true,
             onValueChange = {
+                viewModel.onPasswordChanged(it)
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Next
             ),
             keyboardActions = KeyboardActions(
-                onDone = {
-                    focusManager.clearFocus()
+                onNext = {
+                    focusManager.moveFocus((FocusDirection.Next))
                 }
             ),
             visualTransformation = PasswordVisualTransformation(),
@@ -100,13 +134,14 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = "",
+            value = registerFormData.confirmPassword,
             label = { Text("確認パスワード") },
             placeholder = {
                 Text("*****")
             },
             singleLine = true,
             onValueChange = {
+                viewModel.onConfirmPasswordChanged(it)
             },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Password,
@@ -125,7 +160,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-
+                viewModel.onSignupClicked()
             },
             modifier = Modifier.fillMaxWidth(),
             shape = MaterialTheme.shapes.medium,
@@ -133,7 +168,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                 containerColor = MaterialTheme.colorScheme.primary
             )
         ) {
-            Text("ログイン")
+            Text("サインアップ")
         }
 
 
