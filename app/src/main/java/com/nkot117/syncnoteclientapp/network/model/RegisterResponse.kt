@@ -2,8 +2,9 @@ package com.nkot117.syncnoteclientapp.network.model
 
 import com.squareup.moshi.Json
 
-data class LoginResponse (
+data class RegisterResponse(
     @Json(name = "userWithoutPassword")
-    val userInfo: UserInfo,
-    val token: String
+    val userWithoutPassword: UserInfo,
 )
+
+
