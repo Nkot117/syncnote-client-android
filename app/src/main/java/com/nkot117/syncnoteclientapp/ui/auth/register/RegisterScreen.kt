@@ -36,7 +36,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
-@Preview(showBackground = true)
 fun RegisterScreen(
     moveLoginScreen: () -> Unit,
     viewModel: RegisterViewModel = hiltViewModel(),

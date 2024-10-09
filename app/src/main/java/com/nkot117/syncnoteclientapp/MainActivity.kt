@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.nkot117.syncnoteclientapp.ui.auth.AuthScreen
 import com.nkot117.syncnoteclientapp.ui.auth.login.LoginScreen
+import com.nkot117.syncnoteclientapp.ui.auth.register.RegisterScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,5 +29,5 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun SyncnoteClientApp(modifier: Modifier = Modifier) {
-    LoginScreen(modifier = modifier)
+    AuthScreen(modifier)
 }
