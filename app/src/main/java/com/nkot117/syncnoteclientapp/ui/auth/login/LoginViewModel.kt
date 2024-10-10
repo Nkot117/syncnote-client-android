@@ -3,7 +3,7 @@ package com.nkot117.syncnoteclientapp.ui.auth.login
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nkot117.syncnoteclientapp.data.AuthRepository
+import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
 import com.nkot117.syncnoteclientapp.data.model.AuthResult
 import com.nkot117.syncnoteclientapp.data.model.LoginData
 import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData

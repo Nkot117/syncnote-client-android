@@ -87,4 +87,7 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+
+    // Crypto
+    implementation(libs.androidx.security.crypto)
 }

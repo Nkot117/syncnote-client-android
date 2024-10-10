@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.data
+package com.nkot117.syncnoteclientapp.data.repository
 
 import com.nkot117.syncnoteclientapp.data.model.AuthResult
 import com.nkot117.syncnoteclientapp.data.model.LoginData

@@ -1,13 +1,16 @@
 package com.nkot117.syncnoteclientapp.di
 
-import com.nkot117.syncnoteclientapp.data.AuthRepository
-import com.nkot117.syncnoteclientapp.data.AuthRepositoryImpl
+import android.content.Context
+import com.nkot117.syncnoteclientapp.data.preferences.TokenManager
+import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
+import com.nkot117.syncnoteclientapp.data.repository.AuthRepositoryImpl
 import com.nkot117.syncnoteclientapp.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -50,7 +53,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAuthRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi): AuthRepository {
-        return AuthRepositoryImpl(syncnoteServerApi, moshi)
+    fun provideTokenManager(@ApplicationContext context: Context): TokenManager {
+        return TokenManager(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi, tokenManager: TokenManager): AuthRepository {
+        return AuthRepositoryImpl(syncnoteServerApi, moshi, tokenManager)
     }
 }

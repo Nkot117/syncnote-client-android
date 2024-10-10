@@ -1,10 +1,12 @@
-package com.nkot117.syncnoteclientapp.data
+package com.nkot117.syncnoteclientapp.data.repository
 
+import android.util.Log
 import com.nkot117.syncnoteclientapp.data.model.AuthResult
 import com.nkot117.syncnoteclientapp.data.model.ErrorMessage
 import com.nkot117.syncnoteclientapp.data.model.LoginData
 import com.nkot117.syncnoteclientapp.data.model.RegisterData
 import com.nkot117.syncnoteclientapp.data.model.UserData
+import com.nkot117.syncnoteclientapp.data.preferences.TokenManager
 import com.nkot117.syncnoteclientapp.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import okhttp3.ResponseBody
@@ -12,7 +14,8 @@ import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val syncnoteServerApi: SyncnoteServerApi,
-    private val moshi: Moshi
+    private val moshi: Moshi,
+    private val tokenManager: TokenManager
 ) : AuthRepository {
     override suspend fun login(loginData: LoginData): AuthResult {
         return try {
@@ -20,7 +23,8 @@ class AuthRepositoryImpl @Inject constructor(
             val response = syncnoteServerApi.login(requestParams)
             if (response.isSuccessful) {
                 response.body()?.let {
-                    AuthResult.Success(UserData(it.userInfo.name, it.userInfo.email, it.token))
+                    tokenManager.saveToken(it.token)
+                    AuthResult.Success(UserData(name = it.userInfo.name, email = it.userInfo.email))
                 } ?: AuthResult.Failure(ErrorMessage("Unknown error"))
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
