@@ -4,6 +4,8 @@ import android.content.Context
 import com.nkot117.syncnoteclientapp.data.preferences.TokenManager
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepositoryImpl
+import com.nkot117.syncnoteclientapp.data.repository.MemoRepository
+import com.nkot117.syncnoteclientapp.data.repository.MemoRepositoryImpl
 import com.nkot117.syncnoteclientapp.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -61,5 +63,11 @@ object AppModule {
     @Singleton
     fun provideAuthRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi, tokenManager: TokenManager): AuthRepository {
         return AuthRepositoryImpl(syncnoteServerApi, moshi, tokenManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi, tokenManager: TokenManager): MemoRepository {
+        return MemoRepositoryImpl(syncnoteServerApi, moshi, tokenManager)
     }
 }

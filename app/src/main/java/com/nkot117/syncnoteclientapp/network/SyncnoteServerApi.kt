@@ -17,6 +17,6 @@ interface SyncnoteServerApi {
     @POST("api/user/register")
     suspend fun register(@Body registerRequest: RegisterRequest): Response<Void>
 
-    @GET("api/list")
+    @GET("api/memo/list")
     suspend fun getMemoList(@Header("Authorization") token: String): Response<MemoListResponse>
 }

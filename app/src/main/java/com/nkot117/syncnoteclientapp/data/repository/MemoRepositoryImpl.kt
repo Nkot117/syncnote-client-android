@@ -18,11 +18,11 @@ class MemoRepositoryImpl @Inject constructor(
         return try {
             val token = tokenManager.getToken() ?: return MemoResult.Failure(ErrorMessage("Token not found"))
 
-            val response = syncnoteServerApi.getMemoList(token)
+            val response = syncnoteServerApi.getMemoList("Bearer $token")
 
             if (response.isSuccessful) {
                 response.body()?.let {
-                    val memoList = it.memos.map { memoInfo ->
+                    val memoList = it.memoList.map { memoInfo ->
                         MemoData(
                             title = memoInfo.title,
                             content = memoInfo.content
