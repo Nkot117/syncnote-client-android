@@ -8,4 +8,6 @@ interface AuthRepository {
     suspend fun login(loginData: LoginData): AuthResult
 
     suspend fun register(registerData: RegisterData): AuthResult
+
+    fun getToken(): String
 }

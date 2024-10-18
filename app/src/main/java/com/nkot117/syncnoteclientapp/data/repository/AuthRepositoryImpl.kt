@@ -54,6 +54,10 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getToken(): String {
+        return tokenManager.getToken() ?: ""
+    }
+
     private fun convertErrorBody(errorBody: ResponseBody?): ErrorMessage? {
         return errorBody?.let {
             val adapter = moshi.adapter(ErrorMessage::class.java)
