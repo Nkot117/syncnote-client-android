@@ -3,7 +3,6 @@ package com.nkot117.syncnoteclientapp.data.preferences
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import androidx.security.crypto.MasterKeys
 
 class TokenManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)

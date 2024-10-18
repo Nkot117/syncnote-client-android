@@ -90,4 +90,8 @@ dependencies {
 
     // Crypto
     implementation(libs.androidx.security.crypto)
+
+    // Hyperion
+    debugImplementation(libs.hyperion.core)
+    debugImplementation(libs.hyperion.crash)
 }
