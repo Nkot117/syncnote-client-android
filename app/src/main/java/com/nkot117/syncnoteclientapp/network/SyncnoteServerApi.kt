@@ -1,9 +1,9 @@
 package com.nkot117.syncnoteclientapp.network
 
-import com.nkot117.syncnoteclientapp.network.model.LoginRequest
-import com.nkot117.syncnoteclientapp.network.model.LoginResponse
-import com.nkot117.syncnoteclientapp.network.model.MemoListResponse
-import com.nkot117.syncnoteclientapp.network.model.RegisterRequest
+import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
+import com.nkot117.syncnoteclientapp.network.model.login.LoginResponse
+import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
+import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET

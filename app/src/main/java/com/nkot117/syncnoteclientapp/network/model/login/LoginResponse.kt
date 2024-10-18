@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.network.model
+package com.nkot117.syncnoteclientapp.network.model.login
 
 import com.squareup.moshi.Json
 

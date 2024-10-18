@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.network.model
+package com.nkot117.syncnoteclientapp.network.model.register
 
 data class RegisterRequest(
     val name: String,

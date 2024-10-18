@@ -1,6 +1,6 @@
-package com.nkot117.syncnoteclientapp.data.model
+package com.nkot117.syncnoteclientapp.data.model.auth
 
-import com.nkot117.syncnoteclientapp.network.model.LoginRequest
+import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
 
 data class LoginData(
     val email: String,
@@ -10,6 +10,3 @@ data class LoginData(
         return LoginRequest(email = this.email, password = this.password)
     }
 }
-
-
-

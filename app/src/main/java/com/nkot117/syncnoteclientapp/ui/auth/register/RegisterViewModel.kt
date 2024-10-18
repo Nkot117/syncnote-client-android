@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
-import com.nkot117.syncnoteclientapp.data.model.RegisterData
+import com.nkot117.syncnoteclientapp.data.model.auth.RegisterData
 import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
 import dagger.hilt.android.lifecycle.HiltViewModel

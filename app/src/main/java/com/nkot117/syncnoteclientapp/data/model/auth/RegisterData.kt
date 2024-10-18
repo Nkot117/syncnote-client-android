@@ -1,6 +1,6 @@
-package com.nkot117.syncnoteclientapp.data.model
+package com.nkot117.syncnoteclientapp.data.model.auth
 
-import com.nkot117.syncnoteclientapp.network.model.RegisterRequest
+import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
 
 data class RegisterData(
     val name: String,
