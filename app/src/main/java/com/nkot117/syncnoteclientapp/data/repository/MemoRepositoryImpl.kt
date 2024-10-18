@@ -2,7 +2,7 @@ package com.nkot117.syncnoteclientapp.data.repository
 
 import com.nkot117.syncnoteclientapp.data.model.ErrorMessage
 import com.nkot117.syncnoteclientapp.data.model.MemoData
-import com.nkot117.syncnoteclientapp.data.model.MemoResult
+import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.data.preferences.TokenManager
 import com.nkot117.syncnoteclientapp.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
@@ -14,9 +14,10 @@ class MemoRepositoryImpl @Inject constructor(
     private val moshi: Moshi,
     private val tokenManager: TokenManager
 ) : MemoRepository {
-    override suspend fun getMemoList()  : MemoResult {
+    override suspend fun getMemoList(): Result<List<MemoData>> {
         return try {
-            val token = tokenManager.getToken() ?: return MemoResult.Failure(ErrorMessage("Token not found"))
+            val token = tokenManager.getToken()
+                ?: return Result.Failure(ErrorMessage("Token not found"))
 
             val response = syncnoteServerApi.getMemoList("Bearer $token")
 
@@ -28,16 +29,16 @@ class MemoRepositoryImpl @Inject constructor(
                             content = memoInfo.content
                         )
                     }
-                    MemoResult.Success(memoList)
-                } ?: MemoResult.Failure(ErrorMessage("Unknown error"))
+                    Result.Success(memoList)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
-                    MemoResult.Failure(it)
-                } ?: MemoResult.Failure(ErrorMessage("Unknown error"))
+                    Result.Failure(it)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
         } catch (e: Exception) {
-            MemoResult.Failure(ErrorMessage("Unknown error"))
+            Result.Failure(ErrorMessage("Unknown error"))
         }
     }
 

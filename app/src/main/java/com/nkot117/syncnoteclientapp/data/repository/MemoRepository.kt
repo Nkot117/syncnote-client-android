@@ -1,7 +1,8 @@
 package com.nkot117.syncnoteclientapp.data.repository
 
-import com.nkot117.syncnoteclientapp.data.model.MemoResult
+import com.nkot117.syncnoteclientapp.data.model.MemoData
+import com.nkot117.syncnoteclientapp.data.model.Result
 
 interface MemoRepository {
-    suspend fun getMemoList(): MemoResult
+    suspend fun getMemoList(): Result<List<MemoData>>
 }
