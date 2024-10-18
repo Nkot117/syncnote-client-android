@@ -15,7 +15,7 @@ enum class AuthScreen() {
 
 @Composable
 fun AuthScreen(
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
 

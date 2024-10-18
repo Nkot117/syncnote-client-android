@@ -6,11 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.auth.AuthScreen
-import com.nkot117.syncnoteclientapp.ui.auth.login.LoginScreen
-import com.nkot117.syncnoteclientapp.ui.auth.register.RegisterScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,6 +27,14 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun SyncnoteClientApp(modifier: Modifier = Modifier) {
-    AuthScreen(modifier)
+fun SyncnoteClientApp(
+    viewModel: MainViewModel = hiltViewModel()
+) {
+    val isLogged by viewModel.isLogged.collectAsState()
+
+    if (isLogged) {
+        Text(text = "Logged in")
+    } else {
+        AuthScreen()
+    }
 }
