@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.data.model.memo
+package com.nkot117.syncnoteclientapp.data.model
 
 data class MemoData(
     val title: String,
