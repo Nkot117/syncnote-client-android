@@ -1,58 +1,80 @@
 package com.nkot117.syncnoteclientapp.ui.home
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+
+sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
+    data object Home : BottomNavItem("home", Icons.Default.Home, "Home")
+    data object Account : BottomNavItem("Account", Icons.Default.AccountCircle, "Account")
+}
 
 @Preview(showBackground = true)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
+    val navController = rememberNavController()
+
     Scaffold(
-        bottomBar = {
-            BottomAppBar(
-                actions = {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.Home,
-                                contentDescription = "Home"
-                            )
-                        }
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.AccountCircle,
-                                contentDescription = "Account"
-                            )
-                        }
-                    }
-                })
-        }
+        bottomBar = { BottomNavigation(navController) }
     )
     { innerPadding ->
-        Column(
+        NavHost(
+            navController = navController,
+            startDestination = BottomNavItem.Home.route,
             modifier = modifier.padding(innerPadding)
         ) {
-            Text(text = "Home")
+            composable(BottomNavItem.Home.route) { Text(text = "home") }
+            composable(BottomNavItem.Account.route) { Text(text = "account") }
+        }
+    }
+}
+
+
+@Composable
+fun BottomNavigation(navController: NavHostController) {
+    val items = listOf(
+        BottomNavItem.Home,
+        BottomNavItem.Account
+    )
+
+    NavigationBar {
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+
+        items.forEach { item ->
+            NavigationBarItem(
+                icon = { Icon(item.icon, contentDescription = item.title) },
+                label = { Text(item.title) },
+                selected = currentRoute == item.route,
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
         }
     }
 }
