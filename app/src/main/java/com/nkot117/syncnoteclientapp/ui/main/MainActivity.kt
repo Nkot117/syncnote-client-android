@@ -1,6 +1,7 @@
 package com.nkot117.syncnoteclientapp.ui.main
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -40,7 +41,7 @@ fun SyncnoteClientApp(
 ) {
     LogUtil.d("SyncnoteClientApp Composable")
     val uiState by viewModel.uiState.collectAsState()
-    val isLogged by viewModel.isLogged.collectAsState()
+    val isUserLoggedIn by viewModel.isUserLoggedIn.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.updateIsLogged()
@@ -49,22 +50,33 @@ fun SyncnoteClientApp(
     when (uiState) {
         is MainUiState.Loading -> {
             LogUtil.d("SyncnoteClientApp Loading")
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                CircularProgressIndicator()
-            }
+            LoadingScreen()
         }
 
         is MainUiState.Finished -> {
             LogUtil.d("SyncnoteClientApp Finished")
-            if (isLogged) {
-                MemoListScreen()
-            } else {
-                AuthScreen()
-            }
+            LoggedInContent(isUserLoggedIn)
         }
     }
+}
 
+@Composable
+fun LoadingScreen() {
+    LogUtil.d("LoadingScreen Composable")
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+fun LoggedInContent(isLogged: Boolean) {
+    LogUtil.d("LoggedInContent Composable")
+    if (isLogged) {
+        MemoListScreen()
+    } else {
+        AuthScreen()
+    }
 }

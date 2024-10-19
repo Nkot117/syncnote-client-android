@@ -14,17 +14,17 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MainUiState>(MainUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    private val _isLogged = MutableStateFlow(false)
-    val isLogged = _isLogged.asStateFlow()
+    private val _isUserLoggedIn = MutableStateFlow(false)
+    val isUserLoggedIn = _isUserLoggedIn.asStateFlow()
 
     init {
         val token = authRepository.getToken()
-        _isLogged.value = token.isNotEmpty()
+        _isUserLoggedIn.value = token.isNotEmpty()
     }
 
     fun updateIsLogged() {
         val token = authRepository.getToken()
-        _isLogged.value = token.isNotEmpty()
+        _isUserLoggedIn.value = token.isNotEmpty()
         _uiState.value = MainUiState.Finished
     }
 }
