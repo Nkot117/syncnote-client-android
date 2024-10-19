@@ -68,6 +68,10 @@ class RegisterViewModel @Inject constructor(
         }
     }
 
+    fun clearErrorState() {
+        _uiState.value = RegisterUiState.Ideal
+    }
+
     private fun validateFormData(registerFormData: RegisterFormData): Boolean {
         val name = registerFormData.name
         val email = registerFormData.email

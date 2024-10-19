@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
+import com.nkot117.syncnoteclientapp.ui.components.CustomDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 
@@ -48,79 +50,19 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         when (loginUiState) {
-            is LoginUiState.Ideal,
+            is LoginUiState.Ideal -> {
+                LoginFormContent(
+                    moveRegisterScreen = moveRegisterScreen,
+                    viewModel = viewModel,
+                    inputFormData = inputFormData
+                )
+            }
+
             is LoginUiState.Error -> {
-                val focusManager = LocalFocusManager.current
-                Text(
-                    text = "ログイン",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                CustomOutlinedTextField(
-                    value = inputFormData.email,
-                    label = "メールアドレス",
-                    placeholder = "your@email.com",
-                    isError = inputFormData.errorMessage.containsKey("email"),
-                    errorMessage = inputFormData.errorMessage["email"],
-                    onValueChange = {
-                        viewModel.onEmailChanged(it)
-                    },
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next,
-                    onImeAction = {
-                        focusManager.moveFocus(FocusDirection.Next)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                CustomOutlinedPasswordTextField(
-                    value = inputFormData.password,
-                    label = "パスワード",
-                    placeholder = "*****",
-                    isError = inputFormData.errorMessage.containsKey("password"),
-                    errorMessage = inputFormData.errorMessage["password"],
-                    onValueChange = {
-                        viewModel.onPasswordChanged(it)
-                    },
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                    onImeAction = {
-                        focusManager.clearFocus()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = {
-                            viewModel.onLoginClicked()
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = MaterialTheme.shapes.medium,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Text("ログイン")
-                    }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                ClickableText(
-                    text = AnnotatedString("新規登録はこちら"),
-                    style = TextStyle(
-                        color = Color.Blue,
-                        textDecoration = TextDecoration.Underline
-                    ),
-                    onClick = {
-                        moveRegisterScreen()
-                    }
-                )
+                val errorMessage = (loginUiState as LoginUiState.Error).message
+                CustomDialog(message = errorMessage, button = "OK", onDismiss = {
+                    viewModel.clearErrorState()
+                })
             }
 
             is LoginUiState.Loading -> {
@@ -133,3 +75,86 @@ fun LoginScreen(
         }
     }
 }
+
+@Composable
+fun LoginFormContent(
+    moveRegisterScreen: () -> Unit,
+    viewModel: LoginViewModel,
+    inputFormData: LoginFormData
+) {
+    val focusManager = LocalFocusManager.current
+    Text(
+        text = "ログイン",
+        style = MaterialTheme.typography.titleLarge,
+        color = MaterialTheme.colorScheme.primary
+    )
+
+    Spacer(modifier = Modifier.height(14.dp))
+
+    CustomOutlinedTextField(
+        value = inputFormData.email,
+        label = "メールアドレス",
+        placeholder = "your@email.com",
+        isError = inputFormData.errorMessage.containsKey("email"),
+        errorMessage = inputFormData.errorMessage["email"],
+        onValueChange = {
+            viewModel.onEmailChanged(it)
+        },
+        keyboardType = KeyboardType.Email,
+        imeAction = ImeAction.Next,
+        onImeAction = {
+            focusManager.moveFocus(FocusDirection.Next)
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(8.dp))
+
+    CustomOutlinedPasswordTextField(
+        value = inputFormData.password,
+        label = "パスワード",
+        placeholder = "*****",
+        isError = inputFormData.errorMessage.containsKey("password"),
+        errorMessage = inputFormData.errorMessage["password"],
+        onValueChange = {
+            viewModel.onPasswordChanged(it)
+        },
+        keyboardType = KeyboardType.Password,
+        imeAction = ImeAction.Done,
+        onImeAction = {
+            focusManager.clearFocus()
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+
+    Spacer(modifier = Modifier.height(16.dp))
+
+    Button(
+        onClick = {
+            viewModel.onLoginClicked()
+        },
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.medium,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+        )
+    ) {
+        Text("ログイン")
+    }
+
+    Spacer(modifier = Modifier.height(24.dp))
+
+    ClickableText(
+        text = AnnotatedString("新規登録はこちら"),
+        style = TextStyle(
+            color = Color.Blue,
+            textDecoration = TextDecoration.Underline
+        ),
+        onClick = {
+            moveRegisterScreen()
+        }
+    )
+}
+
+
+

@@ -55,6 +55,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun clearErrorState() {
+        _uiState.value = LoginUiState.Ideal
+    }
+
     private fun validateFormData(loginData: LoginFormData): Boolean {
         val email = loginData.email
         val password = loginData.password
