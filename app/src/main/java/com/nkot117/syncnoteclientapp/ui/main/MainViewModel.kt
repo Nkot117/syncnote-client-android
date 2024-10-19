@@ -23,7 +23,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun updateIsLogged() {
-        _uiState.value = MainUiState.Loading
         val token = authRepository.getToken()
         _isLogged.value = token.isNotEmpty()
         _uiState.value = MainUiState.Finished
