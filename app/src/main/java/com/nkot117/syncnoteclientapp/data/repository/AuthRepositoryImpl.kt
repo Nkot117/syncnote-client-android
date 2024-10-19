@@ -29,10 +29,10 @@ class AuthRepositoryImpl @Inject constructor(
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
                     Result.Failure(it)
-                } ?: Result.Failure(ErrorMessage("Unknown error"))
+                } ?: Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             }
         } catch (e: Exception) {
-            return Result.Failure(ErrorMessage("Unknown error"))
+            return Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
         }
     }
 
@@ -46,10 +46,10 @@ class AuthRepositoryImpl @Inject constructor(
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
                     Result.Failure(it)
-                } ?: Result.Failure(ErrorMessage("Unknown error"))
+                } ?: Result.Failure(ErrorMessage("ユーザー登録に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             }
         } catch (e: Exception) {
-            return Result.Failure(ErrorMessage("Unknown error"))
+            return Result.Failure(ErrorMessage("ユーザー登録に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
         }
     }
 

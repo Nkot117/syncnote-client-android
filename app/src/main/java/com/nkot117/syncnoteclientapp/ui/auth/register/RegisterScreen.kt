@@ -165,15 +165,6 @@ fun RegisterFormContent(
         }
     )
 
-    if (registerFormData.errorMessage.containsKey("confirmPassword")) {
-        Text(
-            text = registerFormData.errorMessage["confirmPassword"] ?: "",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.error,
-            modifier = Modifier.fillMaxWidth()
-        )
-    }
-
     Spacer(modifier = Modifier.height(16.dp))
 
     Button(
