@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.auth.AuthScreen
+import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 import com.nkot117.syncnoteclientapp.ui.home.HomeScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
 import com.nkot117.syncnoteclientapp.util.LogUtil
@@ -49,24 +50,13 @@ fun SyncnoteClientApp(
     when (uiState) {
         is MainUiState.Loading -> {
             LogUtil.d("SyncnoteClientApp Loading")
-            LoadingScreen()
+            CustomLoadingScreen()
         }
 
         is MainUiState.Finished -> {
             LogUtil.d("SyncnoteClientApp Finished")
             LoggedInContent(isUserLoggedIn)
         }
-    }
-}
-
-@Composable
-fun LoadingScreen() {
-    LogUtil.d("LoadingScreen Composable")
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        CircularProgressIndicator()
     }
 }
 

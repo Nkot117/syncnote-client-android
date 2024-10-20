@@ -8,23 +8,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemoListScreen(
     viewModel: MemoListViewModel = hiltViewModel(),
@@ -35,48 +30,42 @@ fun MemoListScreen(
     LaunchedEffect(Unit) {
         viewModel.loadMemos()
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "メモ一覧",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+
+    when (uiState) {
+        is MemoListUiState.Loading -> {
+            CustomLoadingScreen(modifier)
+        }
+
+        is MemoListUiState.Success -> {
+            MemoListContent(
+                memoList = (uiState as MemoListUiState.Success).memoList,
+                modifier
             )
         }
-    ) { paddingValues ->
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (uiState) {
-                is MemoListUiState.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                }
 
-                is MemoListUiState.Success -> {
+        is MemoListUiState.Error -> {
+            Text(
+                text = "Error"
+            )
+        }
+    }
+}
 
-                    LazyColumn {
-                        val memoList = (uiState as MemoListUiState.Success).memoList
-                        items(memoList) {
-                            memoListItem(
-                                title = it.title,
-                                content = it.content
-                            )
-                        }
-
-                    }
-                }
-
-                is MemoListUiState.Error -> {
-                    Text(
-                        text = "Error"
-                    )
-                }
+@Composable
+fun MemoListContent(
+    memoList: List<MemoData>,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        LazyColumn {
+            items(memoList) {
+                memoListItem(
+                    title = it.title,
+                    content = it.content
+                )
             }
         }
     }
@@ -111,8 +100,8 @@ fun memoListItem(
     }
 }
 
-@Composable
 @Preview(showBackground = true)
+@Composable
 fun MemoListItemPreview() {
     memoListItem(
         title = "タイトル",
