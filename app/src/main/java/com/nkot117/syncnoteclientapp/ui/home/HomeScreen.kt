@@ -14,12 +14,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.nkot117.syncnoteclientapp.ui.memo.MemoListScreen
 import com.nkot117.syncnoteclientapp.ui.memo.detail.MemoDetailScreen
 
@@ -28,9 +31,16 @@ sealed class HomeNavItem(val route: String, val icon: ImageVector, val title: St
     data object Account : HomeNavItem("Account", Icons.Default.AccountCircle, "Account")
 }
 
-sealed class MemoDetailNav(val route: String) {
-    data object Detail : MemoDetailNav("detail")
-
+sealed class MemoDetailNav(
+    val route: String,
+    val routeWithArgs: String,
+    val argument: List<NamedNavArgument>
+) {
+    data object Detail : MemoDetailNav(
+        route = "detail",
+        routeWithArgs = "detail/{id}",
+        argument = listOf(navArgument("id") { type = NavType.StringType }),
+        )
 }
 
 @Preview(showBackground = true)
@@ -54,15 +64,19 @@ fun HomeScreen(
             composable(HomeNavItem.MemoList.route) {
                 MemoListScreen(
                     memoClickAction = {
-                        navController.navigate(MemoDetailNav.Detail.route)
+                        navController.navigate("${MemoDetailNav.Detail.route}/${it}")
                     }
                 )
             }
 
             composable(HomeNavItem.Account.route) { Text(text = "account") }
 
-            composable(MemoDetailNav.Detail.route) {
-                MemoDetailScreen()
+            composable(
+                route = MemoDetailNav.Detail.routeWithArgs,
+                arguments = MemoDetailNav.Detail.argument
+            ) { navBackStackEntry ->
+                val id = navBackStackEntry.arguments?.getString("id")
+                MemoDetailScreen(id = id)
             }
         }
     }
@@ -77,7 +91,9 @@ fun BottomNavigation(navController: NavHostController) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    if (currentRoute == MemoDetailNav.Detail.route) return
+
+    if (currentRoute != null && currentRoute.startsWith(MemoDetailNav.Detail.route)) return
+
     NavigationBar {
         items.forEach { item ->
             NavigationBarItem(

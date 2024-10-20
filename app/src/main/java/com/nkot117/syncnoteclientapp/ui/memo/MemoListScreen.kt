@@ -36,7 +36,7 @@ import com.nkot117.syncnoteclientapp.util.LogUtil
 @Composable
 fun MemoListScreen(
     viewModel: MemoListViewModel = hiltViewModel(),
-    memoClickAction: () -> Unit,
+    memoClickAction: (id: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListScreen Composable")
@@ -73,7 +73,7 @@ fun MemoListScreen(
 @Composable
 fun MemoListContent(
     memoList: List<MemoData>,
-    memoClickAction: () -> Unit,
+    memoClickAction: (id: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListContent Composable")
@@ -88,7 +88,7 @@ fun MemoListContent(
                     content = it.content,
                     cardClickAction = {
                         LogUtil.d("MemoListContent cardClickAction")
-                        memoClickAction()
+                        memoClickAction(it.id)
                     }
                 )
             }

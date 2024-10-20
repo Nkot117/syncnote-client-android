@@ -26,17 +26,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
-@Preview(showBackground = true)
 @Composable
 fun MemoDetailScreen(
     viewModel: MemoDetailViewModel = hiltViewModel(),
+    id: String?,
     modifier: Modifier = Modifier
 ) {
-    LogUtil.d("MemoDetailScreen Composable")
+    LogUtil.d("MemoDetailScreen Composable id: $id")
     val uiState by viewModel.uiState.collectAsState()
-
     LaunchedEffect(Unit) {
-        viewModel.loadMemo("670939a9a7d4586629b8e7ac")
+        viewModel.loadMemo(id)
     }
 
     when(uiState){

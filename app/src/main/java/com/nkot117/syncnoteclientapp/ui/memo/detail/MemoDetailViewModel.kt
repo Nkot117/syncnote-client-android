@@ -18,7 +18,12 @@ class MemoDetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<MemoDetailUiState>(MemoDetailUiState.Loading)
     val uiState = _uiState.asStateFlow()
 
-    fun loadMemo(id: String) {
+    fun loadMemo(id: String?) {
+        if(id == null){
+            _uiState.value = MemoDetailUiState.Error("id is null")
+            return
+        }
+
         _uiState.value = MemoDetailUiState.Loading
 
         viewModelScope.launch {
