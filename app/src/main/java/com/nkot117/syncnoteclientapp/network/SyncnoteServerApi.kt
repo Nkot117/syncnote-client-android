@@ -35,5 +35,5 @@ interface SyncnoteServerApi {
         @Path("id") id: String,
         @Header("Authorization") token: String,
         @Body memoContent: MemoContent
-    ): Response<Void>
+    ): Response<MemoDetailResponse>
 }

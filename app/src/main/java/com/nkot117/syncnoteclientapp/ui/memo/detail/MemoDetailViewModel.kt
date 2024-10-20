@@ -23,6 +23,8 @@ class MemoDetailViewModel @Inject constructor(
     private val _memoData = MutableStateFlow(MemoData("", "", ""))
     val memoData = _memoData.asStateFlow()
 
+    private var initMemoData = MemoData("", "", "")
+
     fun loadMemo(id: String?) {
         if (id == null) {
             _uiState.value = MemoDetailUiState.Error("id is null")
@@ -34,15 +36,17 @@ class MemoDetailViewModel @Inject constructor(
         viewModelScope.launch {
             val result = memoRepository.getMemoDetail(id)
             if (result is Result.Success) {
-                val data = result.data
-                _memoData.value = MemoData(
-                    id = data.id,
-                    title = data.title,
-                    content = data.content
+                val memoData = MemoData(
+                    id = result.data.id,
+                    title = result.data.title,
+                    content = result.data.content
                 )
-                _uiState.value = MemoDetailUiState.Finished(
-                    _memoData.value
-                )
+
+                initMemoData = memoData
+
+                _memoData.value = memoData
+
+                _uiState.value = MemoDetailUiState.Finished
             } else {
                 val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoDetailUiState.Error(data.message)
@@ -59,13 +63,21 @@ class MemoDetailViewModel @Inject constructor(
     }
 
     fun saveMemo() {
+        if (initMemoData == memoData.value) {
+            return
+        }
+
         viewModelScope.launch {
             val memo = memoData.value
-            memoRepository.updateMemo(
+            val result = memoRepository.updateMemo(
                 id = memo.id,
                 title = memo.title,
                 content = memo.content
             )
+
+            if (result is Result.Success) {
+                initMemoData = memo
+            }
         }
     }
 }

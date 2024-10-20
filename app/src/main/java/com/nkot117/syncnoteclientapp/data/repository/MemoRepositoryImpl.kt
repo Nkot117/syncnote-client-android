@@ -71,7 +71,7 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateMemo(id: String, title: String, content: String): Result<Unit> {
+    override suspend fun updateMemo(id: String, title: String, content: String): Result<MemoData> {
         return try {
             val token = tokenManager.getToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
@@ -89,7 +89,15 @@ class MemoRepositoryImpl @Inject constructor(
             )
 
             return if (response.isSuccessful) {
-                Result.Success(Unit)
+                response.body()?.let {
+                    Result.Success(
+                        MemoData(
+                            id = it.memo.id,
+                            title = it.memo.title,
+                            content = it.memo.content
+                        )
+                    )
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
