@@ -20,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.nkot117.syncnoteclientapp.ui.MemoListScreen
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
     data object Home : BottomNavItem("home", Icons.Default.Home, "Home")
@@ -42,7 +43,7 @@ fun HomeScreen(
             startDestination = BottomNavItem.Home.route,
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(BottomNavItem.Home.route) { Text(text = "home") }
+            composable(BottomNavItem.Home.route) { MemoListScreen() }
             composable(BottomNavItem.Account.route) { Text(text = "account") }
         }
     }
