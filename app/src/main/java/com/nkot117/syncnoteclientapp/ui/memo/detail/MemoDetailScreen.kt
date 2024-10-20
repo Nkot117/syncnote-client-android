@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,11 +35,12 @@ fun MemoDetailScreen(
 ) {
     LogUtil.d("MemoDetailScreen Composable id: $id")
     val uiState by viewModel.uiState.collectAsState()
+    val memo by viewModel.memoData.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.loadMemo(id)
     }
 
-    when(uiState){
+    when (uiState) {
         is MemoDetailUiState.Loading -> {
             LogUtil.d("MemoDetailScreen Loading")
             CustomLoadingScreen(modifier)
@@ -46,7 +48,6 @@ fun MemoDetailScreen(
 
         is MemoDetailUiState.Finished -> {
             LogUtil.d("MemoDetailScreen Success")
-            val memo = (uiState as MemoDetailUiState.Finished).memo
             Column(
                 modifier = modifier
                     .fillMaxSize()
@@ -55,8 +56,16 @@ fun MemoDetailScreen(
             ) {
                 TextField(
                     value = memo.title,
-                    onValueChange = {  },
-                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = {
+                        viewModel.onTitleChanged(it)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onFocusChanged {
+                            if (!it.isFocused) {
+                                viewModel.saveMemo()
+                            }
+                        },
                     singleLine = true,
                     textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
                 )
@@ -65,10 +74,17 @@ fun MemoDetailScreen(
 
                 TextField(
                     value = memo.content,
-                    onValueChange = {  },
+                    onValueChange = {
+                        viewModel.onContentChanged(it)
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(1f),
+                        .weight(1f)
+                        .onFocusChanged {
+                            if (!it.isFocused) {
+                                viewModel.saveMemo()
+                            }
+                        },
                     textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
                 )
             }

@@ -10,8 +10,8 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface SyncnoteServerApi {
@@ -30,7 +30,7 @@ interface SyncnoteServerApi {
         @Header("Authorization") token: String
     ): Response<MemoDetailResponse>
 
-    @PUT
+    @PATCH("api/memo/{id}")
     suspend fun updateMemo(
         @Path("id") id: String,
         @Header("Authorization") token: String,
