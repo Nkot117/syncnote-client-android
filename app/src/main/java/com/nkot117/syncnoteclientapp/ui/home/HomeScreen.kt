@@ -21,10 +21,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.nkot117.syncnoteclientapp.ui.memo.MemoListScreen
+import com.nkot117.syncnoteclientapp.ui.memo.detail.MemoDetailScreen
 
-sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
-    data object Home : BottomNavItem("home", Icons.Default.Home, "Home")
-    data object Account : BottomNavItem("Account", Icons.Default.AccountCircle, "Account")
+sealed class HomeNavItem(val route: String, val icon: ImageVector, val title: String) {
+    data object MemoList : HomeNavItem("home", Icons.Default.Home, "Home")
+    data object Account : HomeNavItem("Account", Icons.Default.AccountCircle, "Account")
+}
+
+sealed class MemoDetailNav(val route: String) {
+    data object Detail : MemoDetailNav("detail")
+
 }
 
 @Preview(showBackground = true)
@@ -35,32 +41,44 @@ fun HomeScreen(
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = { BottomNavigation(navController) }
+        bottomBar = {
+            BottomNavigation(navController)
+        }
     )
     { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = BottomNavItem.Home.route,
+            startDestination = HomeNavItem.MemoList.route,
             modifier = modifier.padding(innerPadding)
         ) {
-            composable(BottomNavItem.Home.route) { MemoListScreen() }
-            composable(BottomNavItem.Account.route) { Text(text = "account") }
+            composable(HomeNavItem.MemoList.route) {
+                MemoListScreen(
+                    memoClickAction = {
+                        navController.navigate(MemoDetailNav.Detail.route)
+                    }
+                )
+            }
+
+            composable(HomeNavItem.Account.route) { Text(text = "account") }
+
+            composable(MemoDetailNav.Detail.route) {
+                MemoDetailScreen()
+            }
         }
     }
 }
 
-
 @Composable
 fun BottomNavigation(navController: NavHostController) {
     val items = listOf(
-        BottomNavItem.Home,
-        BottomNavItem.Account
+        HomeNavItem.MemoList,
+        HomeNavItem.Account
     )
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    if (currentRoute == MemoDetailNav.Detail.route) return
     NavigationBar {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-
         items.forEach { item ->
             NavigationBarItem(
                 icon = { Icon(item.icon, contentDescription = item.title) },
