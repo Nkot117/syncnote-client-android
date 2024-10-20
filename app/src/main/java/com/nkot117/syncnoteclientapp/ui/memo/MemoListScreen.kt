@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.ui
+package com.nkot117.syncnoteclientapp.ui.memo
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

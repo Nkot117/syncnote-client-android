@@ -20,7 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.nkot117.syncnoteclientapp.ui.MemoListScreen
+import com.nkot117.syncnoteclientapp.ui.memo.MemoListScreen
 
 sealed class BottomNavItem(val route: String, val icon: ImageVector, val title: String) {
     data object Home : BottomNavItem("home", Icons.Default.Home, "Home")

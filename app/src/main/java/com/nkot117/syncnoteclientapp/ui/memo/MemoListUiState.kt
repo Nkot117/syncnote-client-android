@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.ui
+package com.nkot117.syncnoteclientapp.ui.memo
 
 
 sealed interface MemoListUiState {

@@ -14,7 +14,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.nkot117.syncnoteclientapp.ui.MemoListScreen
 import com.nkot117.syncnoteclientapp.ui.auth.AuthScreen
 import com.nkot117.syncnoteclientapp.ui.home.HomeScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
