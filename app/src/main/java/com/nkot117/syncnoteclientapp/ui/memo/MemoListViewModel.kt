@@ -24,6 +24,7 @@ class MemoListViewModel @Inject constructor(
             if (result is Result.Success) {
                 _uiState.value = MemoListUiState.Success(result.data.map {
                     MemoData(
+                        id = it.id,
                         title = it.title,
                         content = it.content
                     )

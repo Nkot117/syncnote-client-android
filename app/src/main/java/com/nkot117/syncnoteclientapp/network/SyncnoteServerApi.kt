@@ -2,6 +2,7 @@ package com.nkot117.syncnoteclientapp.network
 
 import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
 import com.nkot117.syncnoteclientapp.network.model.login.LoginResponse
+import com.nkot117.syncnoteclientapp.network.model.memo.MemoDetailResponse
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoInfo
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
 import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
@@ -26,5 +27,5 @@ interface SyncnoteServerApi {
     suspend fun getMemoDetail(
         @Path("id") id: String,
         @Header("Authorization") token: String
-    ): Response<MemoInfo>
+    ): Response<MemoDetailResponse>
 }

@@ -48,15 +48,15 @@ class MemoRepositoryImpl @Inject constructor(
             val token = tokenManager.getToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
 
-            val response = syncnoteServerApi.getMemoDetail("Bearer $token", id)
+            val response = syncnoteServerApi.getMemoDetail(id, "Bearer $token")
 
             return if (response.isSuccessful) {
                 response.body()?.let {
                     Result.Success(
                         MemoData(
-                            id = it.id,
-                            title = it.title,
-                            content = it.content
+                            id = it.memo.id,
+                            title = it.memo.title,
+                            content = it.memo.content
                         )
                     )
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
