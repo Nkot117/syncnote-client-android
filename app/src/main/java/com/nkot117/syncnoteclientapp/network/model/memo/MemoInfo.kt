@@ -8,3 +8,8 @@ data class MemoInfo(
     val title: String,
     val content: String,
 )
+
+data class MemoContent(
+    val title: String,
+    val content: String,
+)

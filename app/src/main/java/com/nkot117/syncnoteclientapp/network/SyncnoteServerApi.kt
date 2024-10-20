@@ -2,8 +2,8 @@ package com.nkot117.syncnoteclientapp.network
 
 import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
 import com.nkot117.syncnoteclientapp.network.model.login.LoginResponse
+import com.nkot117.syncnoteclientapp.network.model.memo.MemoContent
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoDetailResponse
-import com.nkot117.syncnoteclientapp.network.model.memo.MemoInfo
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
 import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
 import retrofit2.Response
@@ -11,6 +11,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface SyncnoteServerApi {
@@ -28,4 +29,11 @@ interface SyncnoteServerApi {
         @Path("id") id: String,
         @Header("Authorization") token: String
     ): Response<MemoDetailResponse>
+
+    @PUT
+    suspend fun updateMemo(
+        @Path("id") id: String,
+        @Header("Authorization") token: String,
+        @Body memoContent: MemoContent
+    ): Response<Void>
 }
