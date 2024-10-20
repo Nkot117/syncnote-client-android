@@ -5,4 +5,5 @@ import com.nkot117.syncnoteclientapp.data.model.Result
 
 interface MemoRepository {
     suspend fun getMemoList(): Result<List<MemoData>>
+    suspend fun getMemoDetail(id: String): Result<MemoData>
 }
