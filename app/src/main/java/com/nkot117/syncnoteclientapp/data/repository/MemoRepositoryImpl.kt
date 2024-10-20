@@ -25,6 +25,7 @@ class MemoRepositoryImpl @Inject constructor(
                 response.body()?.let {
                     val memoList = it.memoList.map { memoInfo ->
                         MemoData(
+                            id = memoInfo.id,
                             title = memoInfo.title,
                             content = memoInfo.content
                         )
@@ -53,6 +54,7 @@ class MemoRepositoryImpl @Inject constructor(
                 response.body()?.let {
                     Result.Success(
                         MemoData(
+                            id = it.id,
                             title = it.title,
                             content = it.content
                         )
