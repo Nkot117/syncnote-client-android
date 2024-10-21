@@ -1,21 +1,28 @@
 package com.nkot117.syncnoteclientapp.ui.home
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,7 +47,7 @@ sealed class MemoDetailNav(
         route = "detail",
         routeWithArgs = "detail/{id}",
         argument = listOf(navArgument("id") { type = NavType.StringType }),
-        )
+    )
 }
 
 @Preview(showBackground = true)
@@ -51,8 +58,12 @@ fun HomeScreen(
     val navController = rememberNavController()
 
     Scaffold(
-        bottomBar = {
-            BottomNavigation(navController)
+        topBar = {
+            AppTopBar(
+                navController = navController,
+                onBackClick = { navController.popBackStack() },
+                onAccountClick = { navController.navigate(HomeNavItem.Account.route) },
+            )
         }
     )
     { innerPadding ->
@@ -82,34 +93,53 @@ fun HomeScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true)
 @Composable
-fun BottomNavigation(navController: NavHostController) {
-    val items = listOf(
-        HomeNavItem.MemoList,
-        HomeNavItem.Account
-    )
-
+fun AppTopBar(
+    navController: NavHostController = rememberNavController(),
+    onBackClick: () -> Unit = { },
+    onAccountClick: () -> Unit = { },
+    modifier: Modifier = Modifier
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-    if (currentRoute != null && currentRoute.startsWith(MemoDetailNav.Detail.route)) return
-
-    NavigationBar {
-        items.forEach { item ->
-            NavigationBarItem(
-                icon = { Icon(item.icon, contentDescription = item.title) },
-                label = { Text(item.title) },
-                selected = currentRoute == item.route,
-                onClick = {
-                    navController.navigate(item.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
+    val canBack = currentRoute != null && currentRoute != HomeNavItem.MemoList.route
+    CenterAlignedTopAppBar(
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.primary,
+        ),
+        title = {
+            Text(
+                "SyncnoteApp",
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+        },
+        navigationIcon = {
+            if (canBack) {
+                IconButton(onClick = {
+                    onBackClick()
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        modifier = modifier.size(28.dp)
+                    )
+                }
+            }
+        },
+        actions = {
+            IconButton(onClick = {
+                onAccountClick()
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.AccountBox,
+                    contentDescription = "Account",
+                    modifier = modifier.size(28.dp)
+                )
+            }
         }
-    }
+    )
 }
