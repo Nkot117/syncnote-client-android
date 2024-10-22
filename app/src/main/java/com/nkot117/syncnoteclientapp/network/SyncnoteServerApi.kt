@@ -36,4 +36,10 @@ interface SyncnoteServerApi {
         @Header("Authorization") token: String,
         @Body memoContent: MemoContent
     ): Response<MemoDetailResponse>
+
+    @POST("api/memo/create")
+    suspend fun createMemo(
+        @Header("Authorization") token: String,
+        @Body memoContent: MemoContent
+    ): Response<MemoDetailResponse>
 }

@@ -111,6 +111,42 @@ class MemoRepositoryImpl @Inject constructor(
 
     }
 
+    override suspend fun createMemo(title: String, content: String): Result<MemoData> {
+        return try {
+            val token = tokenManager.getToken()
+                ?: return Result.Failure(ErrorMessage("Token not found"))
+            val newMemoData = MemoData(
+                id = "",
+                title = title,
+                content = content
+            )
+            val response = syncnoteServerApi.createMemo(
+                "Bearer $token",
+                newMemoData.toNetworkRequest()
+            )
+
+            return if (response.isSuccessful) {
+                response.body()?.let {
+                    Result.Success(
+                        MemoData(
+                            id = it.memo.id,
+                            title = it.memo.title,
+                            content = it.memo.content
+                        )
+                    )
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
+            } else {
+                val errorResponse = convertErrorBody(response.errorBody())
+                errorResponse?.let {
+                    Result.Failure(it)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
+            }
+
+        } catch (e: Exception) {
+            Result.Failure(ErrorMessage("Unknown error"))
+        }
+    }
+
     private fun convertErrorBody(errorBody: ResponseBody?): ErrorMessage? {
         return errorBody?.let {
             val adapter = moshi.adapter(ErrorMessage::class.java)

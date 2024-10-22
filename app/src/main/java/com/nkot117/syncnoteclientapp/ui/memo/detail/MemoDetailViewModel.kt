@@ -1,6 +1,5 @@
 package com.nkot117.syncnoteclientapp.ui.memo.detail
 
-import android.icu.text.CaseMap.Title
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.model.Result
@@ -26,32 +25,50 @@ class MemoDetailViewModel @Inject constructor(
     private var initMemoData = MemoData("", "", "")
 
     fun loadMemo(id: String?) {
-        if (id == null) {
-            _uiState.value = MemoDetailUiState.Error("id is null")
-            return
-        }
-
         _uiState.value = MemoDetailUiState.Loading
 
-        viewModelScope.launch {
-            val result = memoRepository.getMemoDetail(id)
-            if (result is Result.Success) {
-                val memoData = MemoData(
-                    id = result.data.id,
-                    title = result.data.title,
-                    content = result.data.content
-                )
+        if (id == null) {
+            viewModelScope.launch {
+                val result = memoRepository.createMemo("", "")
+                if (result is Result.Success) {
+                    val memoData = MemoData(
+                        id = result.data.id,
+                        title = result.data.title,
+                        content = result.data.content
+                    )
 
-                initMemoData = memoData
+                    initMemoData = memoData
 
-                _memoData.value = memoData
+                    _memoData.value = memoData
 
-                _uiState.value = MemoDetailUiState.Finished
-            } else {
-                val data = (result as Result.Failure).errorMessage
-                _uiState.value = MemoDetailUiState.Error(data.message)
+                    _uiState.value = MemoDetailUiState.Finished
+                } else {
+                    val data = (result as Result.Failure).errorMessage
+                    _uiState.value = MemoDetailUiState.Error(data.message)
+                }
+            }
+        } else {
+            viewModelScope.launch {
+                val result = memoRepository.getMemoDetail(id)
+                if (result is Result.Success) {
+                    val memoData = MemoData(
+                        id = result.data.id,
+                        title = result.data.title,
+                        content = result.data.content
+                    )
+
+                    initMemoData = memoData
+
+                    _memoData.value = memoData
+
+                    _uiState.value = MemoDetailUiState.Finished
+                } else {
+                    val data = (result as Result.Failure).errorMessage
+                    _uiState.value = MemoDetailUiState.Error(data.message)
+                }
             }
         }
+
     }
 
     fun onTitleChanged(title: String) {

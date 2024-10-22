@@ -7,4 +7,5 @@ interface MemoRepository {
     suspend fun getMemoList(): Result<List<MemoData>>
     suspend fun getMemoDetail(id: String): Result<MemoData>
     suspend fun updateMemo(id: String, title: String, content: String): Result<MemoData>
+    suspend fun createMemo(title: String, content: String): Result<MemoData>
 }
