@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -37,6 +39,7 @@ import com.nkot117.syncnoteclientapp.util.LogUtil
 fun MemoListScreen(
     viewModel: MemoListViewModel = hiltViewModel(),
     memoClickAction: (id: String) -> Unit,
+    memoAddClickAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListScreen Composable")
@@ -54,11 +57,27 @@ fun MemoListScreen(
 
         is MemoListUiState.Success -> {
             LogUtil.d("MemoListScreen Success")
-            MemoListContent(
-                memoList = (uiState as MemoListUiState.Success).memoList,
-                memoClickAction = memoClickAction,
-                modifier = modifier,
-            )
+            Box(modifier = modifier.fillMaxSize()) {
+                MemoListContent(
+                    memoList = (uiState as MemoListUiState.Success).memoList,
+                    memoClickAction = memoClickAction,
+                )
+                FloatingActionButton(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    onClick = {
+                        memoAddClickAction()
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
         }
 
         is MemoListUiState.Error -> {
