@@ -8,4 +8,5 @@ interface MemoRepository {
     suspend fun getMemoDetail(id: String): Result<MemoData>
     suspend fun updateMemo(id: String, title: String, content: String): Result<MemoData>
     suspend fun createMemo(title: String, content: String): Result<MemoData>
+    suspend fun deleteMemo(id: String): Result<Unit>
 }

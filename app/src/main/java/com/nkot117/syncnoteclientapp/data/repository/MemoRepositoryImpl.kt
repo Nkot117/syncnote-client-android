@@ -147,6 +147,24 @@ class MemoRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteMemo(id: String): Result<Unit> {
+        return try {
+            val token =
+                tokenManager.getToken() ?: return Result.Failure(ErrorMessage("Token not found"))
+            val response = syncnoteServerApi.deleteMemo(id, "Bearer $token")
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                val errorResponse = convertErrorBody(response.errorBody())
+                errorResponse?.let {
+                    Result.Failure(it)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
+            }
+        } catch (e: Exception) {
+            Result.Failure(ErrorMessage("Unknown error"))
+        }
+    }
+
     private fun convertErrorBody(errorBody: ResponseBody?): ErrorMessage? {
         return errorBody?.let {
             val adapter = moshi.adapter(ErrorMessage::class.java)

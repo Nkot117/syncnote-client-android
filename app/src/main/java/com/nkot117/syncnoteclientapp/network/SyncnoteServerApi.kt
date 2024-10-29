@@ -8,6 +8,7 @@ import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
 import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.PATCH
@@ -42,4 +43,10 @@ interface SyncnoteServerApi {
         @Header("Authorization") token: String,
         @Body memoContent: MemoContent
     ): Response<MemoDetailResponse>
+
+    @DELETE("api/memo/{id}")
+    suspend fun deleteMemo(
+        @Path("id") id: String,
+        @Header("Authorization") token: String
+    ): Response<Void>
 }
