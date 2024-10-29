@@ -13,11 +13,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,6 +62,9 @@ fun MemoListScreen(
                 MemoListContent(
                     memoList = (uiState as MemoListUiState.Success).memoList,
                     memoClickAction = memoClickAction,
+                    memoDeleteAction = {
+                        viewModel.deleteMemo(it)
+                    }
                 )
                 FloatingActionButton(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -93,24 +97,23 @@ fun MemoListScreen(
 fun MemoListContent(
     memoList: List<MemoData>,
     memoClickAction: (id: String) -> Unit,
-    modifier: Modifier = Modifier
+    memoDeleteAction: (id: String) -> Unit
 ) {
     LogUtil.d("MemoListContent Composable")
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-    ) {
-        LazyColumn {
-            items(memoList) {
-                MemoListItem(
-                    title = it.title,
-                    content = it.content,
-                    cardClickAction = {
-                        LogUtil.d("MemoListContent cardClickAction")
-                        memoClickAction(it.id)
-                    }
-                )
-            }
+    LazyColumn {
+        items(memoList) {
+            MemoListItem(
+                title = it.title,
+                content = it.content,
+                cardClickAction = {
+                    LogUtil.d("MemoListContent cardClickAction")
+                    memoClickAction(it.id)
+                },
+                memoDeleteAction = {
+                    LogUtil.d("MemoListContent onDeleteClick")
+                    memoDeleteAction(it.id)
+                }
+            )
         }
     }
 }
@@ -119,7 +122,8 @@ fun MemoListContent(
 fun MemoListItem(
     title: String,
     content: String,
-    cardClickAction: () -> Unit
+    cardClickAction: () -> Unit,
+    memoDeleteAction: () -> Unit,
 ) {
     LogUtil.d("MemoListItem Composable")
     Column(
@@ -165,12 +169,19 @@ fun MemoListItem(
                     )
                 }
 
-                Icon(
-                    imageVector = Icons.Default.DateRange,
-                    contentDescription = null,
-                    modifier = Modifier.size(24.dp),
-                    tint = Color.Gray
-                )
+                IconButton(
+                    onClick = {
+                        memoDeleteAction()
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.Gray
+                    )
+                }
+
             }
 
         }
@@ -183,6 +194,7 @@ fun MemoListItemPreview() {
     MemoListItem(
         title = "タイトル",
         content = "内容",
-        cardClickAction = {}
+        cardClickAction = {},
+        memoDeleteAction = {}
     )
 }

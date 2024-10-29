@@ -35,4 +35,16 @@ class MemoListViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteMemo(id: String) {
+        viewModelScope.launch {
+            val result = repository.deleteMemo(id)
+            if (result is Result.Success) {
+                loadMemos()
+            } else {
+                val data = (result as Result.Failure).errorMessage
+                _uiState.value = MemoListUiState.Error(data.message)
+            }
+        }
+    }
 }
