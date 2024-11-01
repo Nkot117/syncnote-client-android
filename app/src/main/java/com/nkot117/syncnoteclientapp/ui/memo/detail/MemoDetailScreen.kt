@@ -20,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,6 +28,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
+import com.nkot117.syncnoteclientapp.ui.memo.MemoData
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable
@@ -38,7 +38,9 @@ fun MemoDetailScreen(
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoDetailScreen Composable id: $id")
+
     val lifecycleOwner = LocalLifecycleOwner.current
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY || event == Lifecycle.Event.ON_PAUSE) {
@@ -50,9 +52,9 @@ fun MemoDetailScreen(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
+
     val uiState by viewModel.uiState.collectAsState()
-    val memo by viewModel.memoData.collectAsState()
-    var isFocused by remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         viewModel.loadMemo(id)
     }
@@ -65,48 +67,15 @@ fun MemoDetailScreen(
 
         is MemoDetailUiState.Finished -> {
             LogUtil.d("MemoDetailScreen Success")
-            Column(
+            val memo by viewModel.memoData.collectAsState()
+            MemoDetailsFinishedContent(
+                memo = memo,
+                onTitleChanged = { viewModel.onTitleChanged(it) },
+                onContentChanged = { viewModel.onContentChanged(it) },
+                onSaveMemo = { viewModel.saveMemo() },
                 modifier = modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top
-            ) {
-                TextField(
-                    value = memo.title,
-                    onValueChange = {
-                        viewModel.onTitleChanged(it)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .onFocusChanged {
-                            if (isFocused && !it.isFocused) {
-                                viewModel.saveMemo()
-                            }
-                            isFocused = it.isFocused
-                        },
-                    singleLine = true,
-                    textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
-                )
+            )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                TextField(
-                    value = memo.content,
-                    onValueChange = {
-                        viewModel.onContentChanged(it)
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .onFocusChanged {
-                            if (isFocused && !it.isFocused) {
-                                viewModel.saveMemo()
-                            }
-                            isFocused = it.isFocused
-                        },
-                    textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
-                )
-            }
         }
 
         is MemoDetailUiState.Error -> {
@@ -114,6 +83,69 @@ fun MemoDetailScreen(
             Text(text = message)
         }
     }
+}
 
+@Composable
+fun MemoDetailsFinishedContent(
+    memo: MemoData,
+    onTitleChanged: (String) -> Unit,
+    onContentChanged: (String) -> Unit,
+    onSaveMemo: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var isFocused by remember { mutableStateOf(false) }
 
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top
+    ) {
+        TextField(
+            value = memo.title,
+            onValueChange = onTitleChanged,
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (isFocused && !it.isFocused) {
+                        onSaveMemo()
+                    }
+                    isFocused = it.isFocused
+                },
+            singleLine = true,
+            textStyle = LocalTextStyle.current.copy(fontSize = 24.sp)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(
+            value = memo.content,
+            onValueChange = onContentChanged,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .onFocusChanged {
+                    if (isFocused && !it.isFocused) {
+                        onSaveMemo()
+                    }
+                    isFocused = it.isFocused
+                },
+            textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MemoDetailFinishedPreview() {
+    MemoDetailsFinishedContent(
+        memo = MemoData(
+            id = "1",
+            title = "Title",
+            content = "Content"
+        ),
+        onTitleChanged = {},
+        onContentChanged = {},
+        onSaveMemo = {}
+    )
 }
