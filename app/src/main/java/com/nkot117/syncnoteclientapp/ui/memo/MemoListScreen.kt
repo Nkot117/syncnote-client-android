@@ -40,7 +40,7 @@ import com.nkot117.syncnoteclientapp.util.LogUtil
 fun MemoListScreen(
     viewModel: MemoListViewModel = hiltViewModel(),
     memoClickAction: (id: String) -> Unit,
-    memoAddClickAction: () -> Unit,
+    memoAddAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListScreen Composable")
@@ -58,36 +58,55 @@ fun MemoListScreen(
 
         is MemoListUiState.Success -> {
             LogUtil.d("MemoListScreen Success")
-            Box(modifier = modifier.fillMaxSize()) {
-                MemoListContent(
-                    memoList = (uiState as MemoListUiState.Success).memoList,
-                    memoClickAction = memoClickAction,
-                    memoDeleteAction = {
-                        viewModel.deleteMemo(it)
-                    }
-                )
-                FloatingActionButton(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    onClick = {
-                        memoAddClickAction()
-                    },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(16.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "Add",
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
-            }
+            MemoSuccessContent(
+                memoList = (uiState as MemoListUiState.Success).memoList,
+                memoClickAction = memoClickAction,
+                memoAddAction = memoAddAction,
+                memoDeleteAction = {
+                    viewModel.deleteMemo(it)
+                },
+                modifier = modifier
+            )
         }
 
         is MemoListUiState.Error -> {
             LogUtil.d("MemoListScreen Error")
             Text(
                 text = "Error"
+            )
+        }
+    }
+}
+
+@Composable
+fun MemoSuccessContent(
+    memoList: List<MemoData>,
+    memoClickAction: (id: String) -> Unit,
+    memoAddAction: () -> Unit,
+    memoDeleteAction: (id: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        MemoListContent(
+            memoList = memoList,
+            memoClickAction = memoClickAction,
+            memoDeleteAction = {
+                memoDeleteAction(it)
+            }
+        )
+        FloatingActionButton(
+            containerColor = MaterialTheme.colorScheme.primary,
+            onClick = {
+                memoAddAction()
+            },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add",
+                modifier = Modifier.size(28.dp)
             )
         }
     }
@@ -186,6 +205,23 @@ fun MemoListItem(
 
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MemoListScreenPreview() {
+  MemoSuccessContent(
+      memoClickAction = {},
+      memoAddAction = {},
+      memoDeleteAction = {},
+      memoList = List(10) {
+          MemoData(
+              id = it.toString(),
+              title = "タイトル$it",
+              content = "内容$it"
+          )
+      }
+  )
 }
 
 @Preview(showBackground = true)

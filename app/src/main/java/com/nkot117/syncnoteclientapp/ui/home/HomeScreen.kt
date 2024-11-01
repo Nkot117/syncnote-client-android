@@ -77,7 +77,7 @@ fun HomeScreen(
                     memoClickAction = {
                         navController.navigate("${MemoDetailNav.Detail.route}/${it}")
                     },
-                    memoAddClickAction = {
+                    memoAddAction = {
                         navController.navigate(MemoDetailNav.Detail.route)
                     }
                 )
