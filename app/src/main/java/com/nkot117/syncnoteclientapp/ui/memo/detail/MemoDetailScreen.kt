@@ -7,9 +7,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -101,7 +101,7 @@ fun MemoDetailsFinishedContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        TextField(
+        OutlinedTextField(
             value = memo.title,
             onValueChange = onTitleChanged,
             modifier = Modifier
@@ -118,7 +118,7 @@ fun MemoDetailsFinishedContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        OutlinedTextField(
             value = memo.content,
             onValueChange = onContentChanged,
             modifier = Modifier
