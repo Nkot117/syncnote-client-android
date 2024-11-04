@@ -22,7 +22,8 @@ class AuthRepositoryImpl @Inject constructor(
             val response = syncnoteServerApi.login(requestParams)
             if (response.isSuccessful) {
                 response.body()?.let {
-                    tokenManager.saveToken(it.token)
+                    tokenManager.saveAccessToken(it.accessToken)
+                    tokenManager.saveRefreshToken(it.refreshToken)
                     Result.Success(UserData(name = it.userInfo.name, email = it.userInfo.email))
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             } else {
@@ -54,7 +55,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun getToken(): String {
-        return tokenManager.getToken() ?: ""
+        return tokenManager.getAccessToken() ?: ""
     }
 
     private fun convertErrorBody(errorBody: ResponseBody?): ErrorMessage? {

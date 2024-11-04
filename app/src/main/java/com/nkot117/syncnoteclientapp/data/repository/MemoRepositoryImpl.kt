@@ -16,7 +16,7 @@ class MemoRepositoryImpl @Inject constructor(
 ) : MemoRepository {
     override suspend fun getMemoList(): Result<List<MemoData>> {
         return try {
-            val token = tokenManager.getToken()
+            val token = tokenManager.getAccessToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
 
             val response = syncnoteServerApi.getMemoList("Bearer $token")
@@ -45,7 +45,7 @@ class MemoRepositoryImpl @Inject constructor(
 
     override suspend fun getMemoDetail(id: String): Result<MemoData> {
         return try {
-            val token = tokenManager.getToken()
+            val token = tokenManager.getAccessToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
 
             val response = syncnoteServerApi.getMemoDetail(id, "Bearer $token")
@@ -73,7 +73,7 @@ class MemoRepositoryImpl @Inject constructor(
 
     override suspend fun updateMemo(id: String, title: String, content: String): Result<MemoData> {
         return try {
-            val token = tokenManager.getToken()
+            val token = tokenManager.getAccessToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
 
             val updateMemoData = MemoData(
@@ -113,7 +113,7 @@ class MemoRepositoryImpl @Inject constructor(
 
     override suspend fun createMemo(title: String, content: String): Result<MemoData> {
         return try {
-            val token = tokenManager.getToken()
+            val token = tokenManager.getAccessToken()
                 ?: return Result.Failure(ErrorMessage("Token not found"))
             val newMemoData = MemoData(
                 id = "",
@@ -150,7 +150,7 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun deleteMemo(id: String): Result<Unit> {
         return try {
             val token =
-                tokenManager.getToken() ?: return Result.Failure(ErrorMessage("Token not found"))
+                tokenManager.getAccessToken() ?: return Result.Failure(ErrorMessage("Token not found"))
             val response = syncnoteServerApi.deleteMemo(id, "Bearer $token")
             if (response.isSuccessful) {
                 Result.Success(Unit)

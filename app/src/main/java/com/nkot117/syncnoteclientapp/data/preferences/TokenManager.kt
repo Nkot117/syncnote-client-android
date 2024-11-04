@@ -17,15 +17,22 @@ class TokenManager(context: Context) {
     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
     );
 
-    fun saveToken(token: String) {
+    fun saveAccessToken(accessToken: String) {
         with(sharedPreferences.edit()) {
-            putString("jwt_token", token)
+            putString("jwt_access_token", accessToken)
             apply()
         }
     }
 
-    fun getToken(): String? {
-        return sharedPreferences.getString("jwt_token", null)
+    fun saveRefreshToken(refreshToken: String) {
+        with(sharedPreferences.edit()) {
+            putString("jwt_refresh_token", refreshToken)
+            apply()
+        }
+    }
+
+    fun getAccessToken(): String? {
+        return sharedPreferences.getString("jwt_access_token", null)
     }
 
     fun deleteToken() {
