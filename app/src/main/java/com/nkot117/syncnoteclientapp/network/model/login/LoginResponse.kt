@@ -7,5 +7,4 @@ data class LoginResponse (
     val userInfo: UserInfo,
     val accessToken: String,
     val refreshToken: String
-
 )

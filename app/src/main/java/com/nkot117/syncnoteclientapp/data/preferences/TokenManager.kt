@@ -35,6 +35,10 @@ class TokenManager(context: Context) {
         return sharedPreferences.getString("jwt_access_token", null)
     }
 
+    fun getRefreshToken(): String? {
+        return sharedPreferences.getString("jwt_refresh_token", null)
+    }
+
     fun deleteToken() {
         with(sharedPreferences.edit()) {
             remove("jwt_token")

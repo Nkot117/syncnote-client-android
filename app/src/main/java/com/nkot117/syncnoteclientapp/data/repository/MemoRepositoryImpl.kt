@@ -35,7 +35,17 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
-                    Result.Failure(it)
+                    if (it.message === "トークンの有効期限が切れました") {
+                        // トークンの有効期限切れエラーの場合、トークンをリフレッシュして再度リクエストを送る
+                        val refreshResult = refreshAccessToken()
+                        return if (refreshResult is Result.Success) {
+                            getMemoList()
+                        } else {
+                            Result.Failure(ErrorMessage("Unknown error"))
+                        }
+                    } else {
+                        return Result.Failure(it)
+                    }
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
         } catch (e: Exception) {
@@ -150,10 +160,34 @@ class MemoRepositoryImpl @Inject constructor(
     override suspend fun deleteMemo(id: String): Result<Unit> {
         return try {
             val token =
-                tokenManager.getAccessToken() ?: return Result.Failure(ErrorMessage("Token not found"))
+                tokenManager.getAccessToken()
+                    ?: return Result.Failure(ErrorMessage("Token not found"))
             val response = syncnoteServerApi.deleteMemo(id, "Bearer $token")
             if (response.isSuccessful) {
                 Result.Success(Unit)
+            } else {
+                val errorResponse = convertErrorBody(response.errorBody())
+                errorResponse?.let {
+                    Result.Failure(it)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
+            }
+        } catch (e: Exception) {
+            Result.Failure(ErrorMessage("Unknown error"))
+        }
+    }
+
+    private suspend fun refreshAccessToken(): Result<String> {
+        return try {
+            val refreshToken = tokenManager.getRefreshToken()
+                ?: return Result.Failure(ErrorMessage("Refresh token not found"))
+
+            val response = syncnoteServerApi.refreshToken(refreshToken)
+
+            return if (response.isSuccessful) {
+                response.body()?.let {
+                    tokenManager.saveAccessToken(it)
+                    Result.Success(it)
+                } ?: Result.Failure(ErrorMessage("Unknown error"))
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {

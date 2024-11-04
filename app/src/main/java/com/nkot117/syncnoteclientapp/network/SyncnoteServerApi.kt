@@ -49,4 +49,7 @@ interface SyncnoteServerApi {
         @Path("id") id: String,
         @Header("Authorization") token: String
     ): Response<Void>
+
+    @POST("api/user/refresh-token")
+    suspend fun refreshToken(@Body refreshToken: String): Response<String>
 }
