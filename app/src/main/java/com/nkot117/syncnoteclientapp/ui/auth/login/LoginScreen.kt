@@ -14,6 +14,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,13 +33,16 @@ import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
 import com.nkot117.syncnoteclientapp.ui.components.CustomDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
+import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable
 fun LoginScreen(
     moveRegisterScreen: () -> Unit,
+    moveHomeScreen: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel(),
     modifier: Modifier = Modifier,
 ) {
+    LogUtil.d("LoginScreen")
     val loginUiState by viewModel.uiState.collectAsState()
     val inputFormData by viewModel.loginFormData.collectAsState()
 
@@ -70,7 +74,10 @@ fun LoginScreen(
             }
 
             is LoginUiState.Success -> {
-                Text("ログイン成功")
+                LogUtil.d("Login Success")
+                LaunchedEffect(Unit) {
+                    moveHomeScreen()
+                }
             }
         }
     }

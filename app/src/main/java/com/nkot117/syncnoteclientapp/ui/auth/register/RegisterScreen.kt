@@ -32,6 +32,7 @@ import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
 import com.nkot117.syncnoteclientapp.ui.components.CustomDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
+import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable
 fun RegisterScreen(
@@ -39,6 +40,7 @@ fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
+    LogUtil.d("RegisterScreen")
     val registerUiState by viewModel.uiState.collectAsState()
     val registerFormData by viewModel.registerFormData.collectAsState()
 
