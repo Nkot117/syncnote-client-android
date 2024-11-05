@@ -7,17 +7,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.nkot117.syncnoteclientapp.ui.auth.login.LoginScreen
 import com.nkot117.syncnoteclientapp.ui.auth.register.RegisterScreen
-import com.nkot117.syncnoteclientapp.ui.home.HomeScreen
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
 enum class AuthScreen() {
     Login,
-    Register,
-    Home
+    Register
 }
 
 @Composable
 fun AuthScreen(
+    moveHomeScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("AuthScreen")
@@ -34,9 +33,7 @@ fun AuthScreen(
                     navController.navigate(AuthScreen.Register.name)
                 },
                 moveHomeScreen = {
-                    navController.navigate(AuthScreen.Home.name){
-                        popUpTo(0) { inclusive = true }
-                    }
+                    moveHomeScreen()
                 }
             )
         }
@@ -47,10 +44,6 @@ fun AuthScreen(
                     navController.navigate(AuthScreen.Login.name)
                 }
             )
-        }
-
-        composable(route = AuthScreen.Home.name) {
-             HomeScreen()
         }
     }
 }

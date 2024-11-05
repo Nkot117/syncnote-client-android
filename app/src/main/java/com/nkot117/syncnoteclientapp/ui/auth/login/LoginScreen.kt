@@ -30,7 +30,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
-import com.nkot117.syncnoteclientapp.ui.components.CustomDialog
+import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 import com.nkot117.syncnoteclientapp.util.LogUtil
@@ -64,7 +64,7 @@ fun LoginScreen(
 
             is LoginUiState.Error -> {
                 val errorMessage = (loginUiState as LoginUiState.Error).message
-                CustomDialog(message = errorMessage, button = "OK", onDismiss = {
+                CustomOneButtonDialog(message = errorMessage, button = "OK", onDismiss = {
                     viewModel.clearErrorState()
                 })
             }

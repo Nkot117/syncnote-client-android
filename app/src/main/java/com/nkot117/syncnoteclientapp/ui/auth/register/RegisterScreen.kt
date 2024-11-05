@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
-import com.nkot117.syncnoteclientapp.ui.components.CustomDialog
+import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
 import com.nkot117.syncnoteclientapp.util.LogUtil
@@ -62,7 +62,7 @@ fun RegisterScreen(
 
             is RegisterUiState.Error -> {
                 val errorMessage = (registerUiState as RegisterUiState.Error).message
-                CustomDialog(
+                CustomOneButtonDialog(
                     message = errorMessage,
                     button = "OK",
                     onDismiss = {

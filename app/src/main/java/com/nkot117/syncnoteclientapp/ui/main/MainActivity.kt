@@ -4,16 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.nkot117.syncnoteclientapp.ui.auth.AuthScreen
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 import com.nkot117.syncnoteclientapp.ui.home.HomeScreen
@@ -35,6 +34,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+enum class MainScreen() {
+    Home,
+    Auth,
+}
+
 @Composable
 fun SyncnoteClientApp(
     viewModel: MainViewModel = hiltViewModel()
@@ -47,6 +51,34 @@ fun SyncnoteClientApp(
         viewModel.updateIsLogged()
     }
 
+    val navController = rememberNavController()
+
+    NavHost(
+        navController = navController,
+        startDestination = MainScreen.Auth.name
+    ) {
+        composable(route = MainScreen.Home.name) {
+            HomeScreen(
+                moveAuthScreen = {
+                    navController.navigate(MainScreen.Auth.name){
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        composable(route = MainScreen.Auth.name) {
+            AuthScreen(
+                moveHomeScreen = {
+                    navController.navigate(MainScreen.Home.name){
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+        }
+    }
+
+
     when (uiState) {
         is MainUiState.Loading -> {
             LogUtil.d("SyncnoteClientApp Loading")
@@ -55,17 +87,19 @@ fun SyncnoteClientApp(
 
         is MainUiState.Finished -> {
             LogUtil.d("SyncnoteClientApp Finished")
-            LoggedInContent(isUserLoggedIn)
+            LoggedInContent(navController, isUserLoggedIn)
         }
     }
 }
 
 @Composable
-fun LoggedInContent(isLogged: Boolean) {
+fun LoggedInContent(
+    navController: NavController,
+    isLogged: Boolean) {
     LogUtil.d("LoggedInContent Composable")
     if (isLogged) {
-        HomeScreen()
+        navController.navigate(MainScreen.Home.name)
     } else {
-        AuthScreen()
+        navController.navigate(MainScreen.Auth.name)
     }
 }
