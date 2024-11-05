@@ -2,6 +2,8 @@ package com.nkot117.syncnoteclientapp.network
 
 import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
 import com.nkot117.syncnoteclientapp.network.model.login.LoginResponse
+import com.nkot117.syncnoteclientapp.network.model.login.RefreshTokenRequest
+import com.nkot117.syncnoteclientapp.network.model.login.RefreshTokenResponse
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoContent
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoDetailResponse
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
@@ -21,6 +23,9 @@ interface SyncnoteServerApi {
 
     @POST("api/user/register")
     suspend fun register(@Body registerRequest: RegisterRequest): Response<Void>
+
+    @POST("api/user/refresh-token")
+    suspend fun refreshToken(@Body refreshToken: RefreshTokenRequest): Response<RefreshTokenResponse>
 
     @GET("api/memo/list")
     suspend fun getMemoList(@Header("Authorization") token: String): Response<MemoListResponse>
@@ -49,7 +54,4 @@ interface SyncnoteServerApi {
         @Path("id") id: String,
         @Header("Authorization") token: String
     ): Response<Void>
-
-    @POST("api/user/refresh-token")
-    suspend fun refreshToken(@Body refreshToken: String): Response<String>
 }

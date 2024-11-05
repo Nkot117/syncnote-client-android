@@ -3,6 +3,7 @@ package com.nkot117.syncnoteclientapp.data.preferences
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.nkot117.syncnoteclientapp.data.model.auth.RefreshTokenData
 
 class TokenManager(context: Context) {
     private val masterKey = MasterKey.Builder(context)
@@ -35,8 +36,11 @@ class TokenManager(context: Context) {
         return sharedPreferences.getString("jwt_access_token", null)
     }
 
-    fun getRefreshToken(): String? {
-        return sharedPreferences.getString("jwt_refresh_token", null)
+    fun getRefreshToken(): RefreshTokenData? {
+        val token = sharedPreferences.getString("jwt_refresh_token", null) ?: return null
+        return RefreshTokenData(
+            refreshToken = token
+        )
     }
 
     fun deleteToken() {
