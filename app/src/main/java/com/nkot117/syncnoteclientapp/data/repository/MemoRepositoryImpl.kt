@@ -35,14 +35,10 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
-                    val message = it.message
-                    if (message == "トークンの有効期限が切れました") {
-                        // トークンの有効期限切れエラーの場合、トークンをリフレッシュして再度リクエストを送る
-                        val refreshResult = refreshAccessToken()
-                        return if (refreshResult is Result.Success) {
+                    val reason = it.reason
+                    if (reason == "expired") {
+                        return handleExpiredTokenError {
                             getMemoList()
-                        } else {
-                            Result.Failure(ErrorMessage("Unknown error"))
                         }
                     } else {
                         return Result.Failure(it)
@@ -74,7 +70,14 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
-                    Result.Failure(it)
+                    val reason = it.reason
+                    if (reason == "expired") {
+                        return handleExpiredTokenError {
+                            getMemoDetail(id)
+                        }
+                    } else {
+                        Result.Failure(it)
+                    }
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
         } catch (e: Exception) {
@@ -149,6 +152,12 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
+                    val reason = it.reason
+                    if(reason == "expired") {
+                        return handleExpiredTokenError {
+                            createMemo(title, content)
+                        }
+                    }
                     Result.Failure(it)
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
@@ -169,6 +178,12 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
+                    val reason = it.reason
+                    if(reason == "expired") {
+                        return handleExpiredTokenError {
+                            deleteMemo(id)
+                        }
+                    }
                     Result.Failure(it)
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
@@ -204,6 +219,16 @@ class MemoRepositoryImpl @Inject constructor(
         return errorBody?.let {
             val adapter = moshi.adapter(ErrorMessage::class.java)
             adapter.fromJson(it.string())
+        }
+    }
+
+    private suspend fun <T> handleExpiredTokenError(retryFunction: suspend () -> Result<T>): Result<T> {
+        // トークンの有効期限切れエラーの場合、トークンをリフレッシュして再度リクエストを送る
+        val refreshResult = refreshAccessToken()
+        return if (refreshResult is Result.Success) {
+            retryFunction()
+        } else {
+            Result.Failure(ErrorMessage("Unknown error"))
         }
     }
 }

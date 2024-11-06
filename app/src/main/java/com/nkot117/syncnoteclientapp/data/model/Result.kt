@@ -6,5 +6,6 @@ sealed class Result<out T> {
 }
 
 data class ErrorMessage(
-    val message: String
+    val message: String,
+    val reason: String? = null
 )
