@@ -43,9 +43,10 @@ class TokenManager(context: Context) {
         )
     }
 
-    fun deleteToken() {
+    fun clearTokens() {
         with(sharedPreferences.edit()) {
-            remove("jwt_token")
+            remove("jwt_access_token")
+            remove("jwt_refresh_token")
             apply()
         }
     }

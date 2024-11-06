@@ -11,4 +11,6 @@ interface AuthRepository {
     suspend fun register(registerData: RegisterData): Result<UserData?>
 
     fun getToken(): String
+
+    fun clearTokens()
 }

@@ -46,12 +46,11 @@ fun SyncnoteClientApp(
     LogUtil.d("SyncnoteClientApp Composable")
     val uiState by viewModel.uiState.collectAsState()
     val isUserLoggedIn by viewModel.isUserLoggedIn.collectAsState()
+    val navController = rememberNavController()
 
     LaunchedEffect(Unit) {
         viewModel.updateIsLogged()
     }
-
-    val navController = rememberNavController()
 
     NavHost(
         navController = navController,
@@ -60,9 +59,10 @@ fun SyncnoteClientApp(
         composable(route = MainScreen.Home.name) {
             HomeScreen(
                 moveAuthScreen = {
-                    navController.navigate(MainScreen.Auth.name){
+                    navController.navigate(MainScreen.Auth.name) {
                         popUpTo(0) { inclusive = true }
                     }
+                    viewModel.logout()
                 }
             )
         }
@@ -70,14 +70,13 @@ fun SyncnoteClientApp(
         composable(route = MainScreen.Auth.name) {
             AuthScreen(
                 moveHomeScreen = {
-                    navController.navigate(MainScreen.Home.name){
+                    navController.navigate(MainScreen.Home.name) {
                         popUpTo(0) { inclusive = true }
                     }
                 }
             )
         }
     }
-
 
     when (uiState) {
         is MainUiState.Loading -> {
@@ -95,7 +94,8 @@ fun SyncnoteClientApp(
 @Composable
 fun LoggedInContent(
     navController: NavController,
-    isLogged: Boolean) {
+    isLogged: Boolean
+) {
     LogUtil.d("LoggedInContent Composable")
     if (isLogged) {
         navController.navigate(MainScreen.Home.name)

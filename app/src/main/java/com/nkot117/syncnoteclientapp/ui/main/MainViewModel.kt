@@ -27,4 +27,9 @@ class MainViewModel @Inject constructor(
         _isUserLoggedIn.value = token.isNotEmpty()
         _uiState.value = MainUiState.Finished
     }
+
+    fun logout() {
+        authRepository.clearTokens()
+        _isUserLoggedIn.value = false
+    }
 }
