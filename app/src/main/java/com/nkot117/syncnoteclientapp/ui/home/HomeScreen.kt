@@ -93,13 +93,24 @@ fun HomeScreen(
                 arguments = MemoDetailNav.Detail.argument
             ) { navBackStackEntry ->
                 val id = navBackStackEntry.arguments?.getString("id")
-                MemoDetailScreen(id = id)
+                MemoDetailScreen(
+                    id = id,
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+
             }
 
             composable(
                 route = MemoDetailNav.Detail.route
             ) {
-                MemoDetailScreen(id = null)
+                MemoDetailScreen(
+                    id = null,
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
             }
         }
 
@@ -125,9 +136,9 @@ fun HomeScreen(
 @Composable
 fun AppTopBar(
     navController: NavHostController = rememberNavController(),
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit = { },
     onAccountClick: () -> Unit = { },
-    modifier: Modifier = Modifier
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route

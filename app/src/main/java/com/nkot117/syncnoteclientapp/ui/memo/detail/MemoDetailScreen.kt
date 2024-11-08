@@ -28,14 +28,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
+import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
 import com.nkot117.syncnoteclientapp.ui.memo.MemoData
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable
 fun MemoDetailScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
     viewModel: MemoDetailViewModel = hiltViewModel(),
     id: String?,
-    modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoDetailScreen Composable id: $id")
 
@@ -79,8 +81,12 @@ fun MemoDetailScreen(
         }
 
         is MemoDetailUiState.Error -> {
-            val message = (uiState as MemoDetailUiState.Error).message
-            Text(text = message)
+            CustomOneButtonDialog(
+                title = "エラー",
+                message = "メモが取得できませんでした。",
+                button = "OK",
+                onDismiss = { onBack() }
+            )
         }
     }
 }
