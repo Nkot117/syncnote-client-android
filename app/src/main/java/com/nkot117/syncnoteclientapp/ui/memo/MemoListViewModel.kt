@@ -22,13 +22,13 @@ class MemoListViewModel @Inject constructor(
         viewModelScope.launch {
             val result = repository.getMemoList()
             if (result is Result.Success) {
-                _uiState.value = MemoListUiState.Success(result.data.map {
+                _uiState.value = MemoListUiState.Success(memoList =  result.data.map {
                     MemoData(
                         id = it.id,
                         title = it.title,
                         content = it.content
                     )
-                })
+                }, isRefreshing = false)
             } else {
                 val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoListUiState.Error(data.message)
@@ -41,6 +41,29 @@ class MemoListViewModel @Inject constructor(
             val result = repository.deleteMemo(id)
             if (result is Result.Success) {
                 loadMemos()
+            } else {
+                val data = (result as Result.Failure).errorMessage
+                _uiState.value = MemoListUiState.Error(data.message)
+            }
+        }
+    }
+
+    fun refreshMemos() {
+        val currentState = uiState.value
+        if(currentState !is MemoListUiState.Success) return
+
+        _uiState.value = currentState.copy(isRefreshing = true)
+
+        viewModelScope.launch {
+            val result = repository.getMemoList()
+            if (result is Result.Success) {
+                _uiState.value = MemoListUiState.Success(memoList = result.data.map {
+                    MemoData(
+                        id = it.id,
+                        title = it.title,
+                        content = it.content
+                    )
+                }, isRefreshing = false)
             } else {
                 val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoListUiState.Error(data.message)

@@ -1,6 +1,5 @@
 package com.nkot117.syncnoteclientapp.ui.memo
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +15,13 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
+import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable
@@ -65,34 +67,54 @@ fun MemoListScreen(
                 memoDeleteAction = {
                     viewModel.deleteMemo(it)
                 },
+                isRefreshing = (uiState as MemoListUiState.Success).isRefreshing,
+                refreshAction = {
+                    viewModel.refreshMemos()
+                },
                 modifier = modifier
             )
         }
 
         is MemoListUiState.Error -> {
             LogUtil.d("MemoListScreen Error")
-            Text(
-                text = "Error"
+            CustomOneButtonDialog(
+                title = "エラー",
+                message = "メモを取得できませんでした。",
+                button = "リトライ",
+                onDismiss = {
+                    viewModel.loadMemos()
+                }
             )
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MemoSuccessContent(
     memoList: List<MemoData>,
-    memoClickAction: (id: String) -> Unit,
-    memoAddAction: () -> Unit,
-    memoDeleteAction: (id: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    memoClickAction: (id: String) -> Unit = {},
+    memoAddAction: () -> Unit = {},
+    memoDeleteAction: (id: String) -> Unit = {},
+    isRefreshing: Boolean = false,
+    refreshAction: () -> Unit = {},
 ) {
-    Box(modifier = modifier.fillMaxSize()) {
+    PullToRefreshBox(
+        modifier = modifier.fillMaxSize(),
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            LogUtil.d("PullToRefreshBox onRefresh")
+            refreshAction()
+        }
+    ) {
         MemoListContent(
             memoList = memoList,
             memoClickAction = memoClickAction,
             memoDeleteAction = {
                 memoDeleteAction(it)
-            }
+            },
+            modifier = modifier
         )
         FloatingActionButton(
             containerColor = MaterialTheme.colorScheme.primary,
@@ -116,10 +138,13 @@ fun MemoSuccessContent(
 fun MemoListContent(
     memoList: List<MemoData>,
     memoClickAction: (id: String) -> Unit,
-    memoDeleteAction: (id: String) -> Unit
+    memoDeleteAction: (id: String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListContent Composable")
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier.fillMaxSize()
+    ) {
         items(memoList) {
             MemoListItem(
                 title = it.title,
@@ -210,18 +235,15 @@ fun MemoListItem(
 @Preview(showBackground = true)
 @Composable
 fun MemoListScreenPreview() {
-  MemoSuccessContent(
-      memoClickAction = {},
-      memoAddAction = {},
-      memoDeleteAction = {},
-      memoList = List(10) {
-          MemoData(
-              id = it.toString(),
-              title = "タイトル$it",
-              content = "内容$it"
-          )
-      }
-  )
+    MemoSuccessContent(
+        memoList = List(10) {
+            MemoData(
+                id = it.toString(),
+                title = "タイトル$it",
+                content = "内容$it"
+            )
+        }
+    )
 }
 
 @Preview(showBackground = true)
