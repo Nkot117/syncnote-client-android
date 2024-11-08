@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.data.model
+package com.nkot117.syncnoteclientapp.data.model.memo
 
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoContent
 

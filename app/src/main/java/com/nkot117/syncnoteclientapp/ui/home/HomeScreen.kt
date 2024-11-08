@@ -33,7 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nkot117.syncnoteclientapp.ui.components.CustomTwoButtonDialog
-import com.nkot117.syncnoteclientapp.ui.memo.MemoListScreen
+import com.nkot117.syncnoteclientapp.ui.memo.list.MemoListScreen
 import com.nkot117.syncnoteclientapp.ui.memo.detail.MemoDetailScreen
 
 sealed class HomeNavItem(val route: String, val icon: ImageVector, val title: String) {

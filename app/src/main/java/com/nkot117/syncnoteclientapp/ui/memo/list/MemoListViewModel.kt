@@ -1,9 +1,10 @@
-package com.nkot117.syncnoteclientapp.ui.memo
+package com.nkot117.syncnoteclientapp.ui.memo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.data.repository.MemoRepository
+import com.nkot117.syncnoteclientapp.ui.memo.MemoData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +23,7 @@ class MemoListViewModel @Inject constructor(
         viewModelScope.launch {
             val result = repository.getMemoList()
             if (result is Result.Success) {
-                _uiState.value = MemoListUiState.Success(memoList =  result.data.map {
+                _uiState.value = MemoListUiState.Success(memoList = result.data.map {
                     MemoData(
                         id = it.id,
                         title = it.title,
