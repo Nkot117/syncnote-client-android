@@ -1,6 +1,7 @@
 package com.nkot117.syncnoteclientapp.ui.auth.register
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,9 +26,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
+import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedPasswordTextField
 import com.nkot117.syncnoteclientapp.ui.components.CustomOutlinedTextField
@@ -44,40 +46,42 @@ fun RegisterScreen(
     val registerUiState by viewModel.uiState.collectAsState()
     val registerFormData by viewModel.registerFormData.collectAsState()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        when(registerUiState) {
-            is RegisterUiState.Ideal -> {
+    when (registerUiState) {
+        is RegisterUiState.Ideal -> {
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 RegisterFormContent(
                     viewModel = viewModel,
                     registerFormData = registerFormData,
                     moveLoginScreen = moveLoginScreen
                 )
             }
+        }
 
-            is RegisterUiState.Error -> {
-                val errorMessage = (registerUiState as RegisterUiState.Error).message
-                CustomOneButtonDialog(
-                    message = errorMessage,
-                    button = "OK",
-                    onDismiss = {
-                        viewModel.clearErrorState()
-                    }
-                )
-            }
+        is RegisterUiState.Error -> {
+            val errorMessage = (registerUiState as RegisterUiState.Error).message
+            CustomOneButtonDialog(
+                message = errorMessage,
+                button = "OK",
+                onDismiss = {
+                    viewModel.clearErrorState()
+                }
+            )
+        }
 
-            is RegisterUiState.Loading -> {
-                CircularProgressIndicator()
-            }
+        is RegisterUiState.Loading -> {
+            CustomLoadingScreen()
+        }
 
-            is RegisterUiState.Success -> {
-                Text("サインアップ成功")
-            }
+        is RegisterUiState.Success -> {
+            RegisterSuccessContent(
+                moveLoginScreen = moveLoginScreen
+            )
         }
     }
 }
@@ -194,4 +198,34 @@ fun RegisterFormContent(
             moveLoginScreen()
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RegisterSuccessContent(
+    modifier: Modifier = Modifier,
+    moveLoginScreen: () -> Unit = { }
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize().padding(16.dp)
+    ) {
+        Column {
+            Text(
+                "ご登録いただいたメールアドレスに確認メールを送信しました。メール内のリンクをクリックして、登録を完了してください。\nメールが届かない場合は、迷惑メールフォルダをご確認いただくか、再送信をお試しください。",
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    moveLoginScreen()
+                },
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ) {
+                Text("ログイン画面へ")
+            }
+        }
+    }
 }
