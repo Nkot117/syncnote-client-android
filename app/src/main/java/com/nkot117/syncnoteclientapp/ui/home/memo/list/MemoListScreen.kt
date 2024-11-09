@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.ui.memo.list
+package com.nkot117.syncnoteclientapp.ui.home.memo.list
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.nkot117.syncnoteclientapp.ui.components.CustomLoadingScreen
 import com.nkot117.syncnoteclientapp.ui.components.CustomOneButtonDialog
-import com.nkot117.syncnoteclientapp.ui.memo.MemoData
+import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 import com.nkot117.syncnoteclientapp.util.LogUtil
 
 @Composable

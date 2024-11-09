@@ -1,4 +1,4 @@
-package com.nkot117.syncnoteclientapp.ui.memo.detail
+package com.nkot117.syncnoteclientapp.ui.home.memo.detail
 
 sealed interface MemoDetailUiState {
     data object Loading : MemoDetailUiState

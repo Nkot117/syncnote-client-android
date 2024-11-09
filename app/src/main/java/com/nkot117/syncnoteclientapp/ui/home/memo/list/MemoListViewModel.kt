@@ -1,10 +1,10 @@
-package com.nkot117.syncnoteclientapp.ui.memo.list
+package com.nkot117.syncnoteclientapp.ui.home.memo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.data.repository.MemoRepository
-import com.nkot117.syncnoteclientapp.ui.memo.MemoData
+import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,6 +1,6 @@
-package com.nkot117.syncnoteclientapp.ui.memo.list
+package com.nkot117.syncnoteclientapp.ui.home.memo.list
 
-import com.nkot117.syncnoteclientapp.ui.memo.MemoData
+import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 
 
 sealed interface MemoListUiState {
