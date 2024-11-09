@@ -27,6 +27,9 @@ interface SyncnoteServerApi {
     @POST("api/user/refresh-token")
     suspend fun refreshToken(@Body refreshToken: RefreshTokenRequest): Response<RefreshTokenResponse>
 
+    @DELETE("api/user/delete")
+    suspend fun deleteUser(@Header("Authorization") token: String): Response<Void>
+
     @GET("api/memo/list")
     suspend fun getMemoList(@Header("Authorization") token: String): Response<MemoListResponse>
 

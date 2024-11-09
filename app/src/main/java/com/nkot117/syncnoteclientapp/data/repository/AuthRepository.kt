@@ -13,4 +13,6 @@ interface AuthRepository {
     fun getToken(): String
 
     fun clearTokens()
+
+    suspend fun deleteAccount(): Result<Unit>
 }

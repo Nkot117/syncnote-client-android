@@ -62,6 +62,22 @@ class AuthRepositoryImpl @Inject constructor(
         tokenManager.clearTokens()
     }
 
+    override suspend fun deleteAccount(): Result<Unit> {
+        return try {
+            val response = syncnoteServerApi.deleteUser("Bearer ${tokenManager.getAccessToken()}")
+            if (response.isSuccessful) {
+                Result.Success(Unit)
+            } else {
+                val errorResponse = convertErrorBody(response.errorBody())
+                errorResponse?.let {
+                    Result.Failure(it)
+                } ?: Result.Failure(ErrorMessage("アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
+            }
+        } catch (e: Exception) {
+            return Result.Failure(ErrorMessage("アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
+        }
+    }
+
     private fun convertErrorBody(errorBody: ResponseBody?): ErrorMessage? {
         return errorBody?.let {
             val adapter = moshi.adapter(ErrorMessage::class.java)
