@@ -58,7 +58,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
-    var isDialogShow by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -89,7 +88,11 @@ fun HomeScreen(
             }
 
             composable(HomeNavItem.Account.route) {
-                AccountScreen(modifier)
+                AccountScreen(modifier = modifier,
+                    onLogout = {
+                        moveAuthScreen()
+                    }
+                )
             }
 
             composable(
@@ -116,21 +119,6 @@ fun HomeScreen(
                     }
                 )
             }
-        }
-
-        if (isDialogShow) {
-            CustomTwoButtonDialog(
-                title = "ログアウトしますか？",
-                positiveButton = "ログアウト",
-                negativeButton = "キャンセル",
-                onPositive = {
-                    isDialogShow = false
-                    moveAuthScreen()
-                },
-                onNegative = {
-                    isDialogShow = false
-                }
-            )
         }
     }
 }

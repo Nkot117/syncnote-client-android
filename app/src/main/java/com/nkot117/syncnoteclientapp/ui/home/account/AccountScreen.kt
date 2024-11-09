@@ -23,7 +23,10 @@ import com.nkot117.syncnoteclientapp.ui.components.CustomTwoButtonDialog
 
 @Preview(showBackground = true)
 @Composable
-fun AccountScreen(modifier: Modifier = Modifier) {
+fun AccountScreen(
+    modifier: Modifier = Modifier,
+    onLogout: () -> Unit = {},
+    ) {
     var isShowLogoutDialog by remember { mutableStateOf(false) }
     var isShowDeleteAccountDialog by remember { mutableStateOf(false) }
 
@@ -72,6 +75,7 @@ fun AccountScreen(modifier: Modifier = Modifier) {
             positiveButton = "ログアウト",
             negativeButton = "キャンセル",
             onPositive = {
+                onLogout()
                 isShowLogoutDialog = false
             },
             onNegative = {
