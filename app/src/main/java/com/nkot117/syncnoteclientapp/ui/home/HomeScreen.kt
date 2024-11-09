@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -20,7 +19,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,11 +31,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.nkot117.syncnoteclientapp.ui.components.CustomTwoButtonDialog
-import com.nkot117.syncnoteclientapp.ui.memo.list.MemoListScreen
-import com.nkot117.syncnoteclientapp.ui.memo.detail.MemoDetailScreen
+import com.nkot117.syncnoteclientapp.ui.home.account.AccountScreen
+import com.nkot117.syncnoteclientapp.ui.home.memo.list.MemoListScreen
+import com.nkot117.syncnoteclientapp.ui.home.memo.detail.MemoDetailScreen
 
-sealed class HomeNavItem(val route: String, val icon: ImageVector, val title: String) {
-    data object MemoList : HomeNavItem("home", Icons.Default.Home, "Home")
+sealed class HomeNavItem(val route: String, val title: String) {
+    data object MemoList : HomeNavItem("home", "Home")
+    data object Account : HomeNavItem("account", "Account")
 }
 
 sealed class MemoDetailNav(
@@ -66,7 +66,7 @@ fun HomeScreen(
                 navController = navController,
                 onBackClick = { navController.popBackStack() },
                 onAccountClick = {
-                    isDialogShow = true
+                    navController.navigate(HomeNavItem.Account.route)
                 },
             )
         },
@@ -86,6 +86,10 @@ fun HomeScreen(
                         navController.navigate(MemoDetailNav.Detail.route)
                     }
                 )
+            }
+
+            composable(HomeNavItem.Account.route) {
+                AccountScreen(modifier)
             }
 
             composable(

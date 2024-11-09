@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,6 +58,8 @@ fun CustomTwoButtonDialog(
     negativeButton: String,
     onPositive: () -> Unit,
     onNegative: () -> Unit,
+    positiveButtonColor : Color = MaterialTheme.colorScheme.primary,
+    negativeButtonColor : Color = MaterialTheme.colorScheme.secondary
 ) {
     AlertDialog(
         onDismissRequest = { onNegative() },
@@ -72,7 +75,7 @@ fun CustomTwoButtonDialog(
             Button(
                 onClick = { onPositive() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = positiveButtonColor
                 )
             ) {
                 Text(
@@ -88,7 +91,7 @@ fun CustomTwoButtonDialog(
             Button(
                 onClick = { onNegative() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.secondary
+                    containerColor = negativeButtonColor
                 )
             ) {
                 Text(
