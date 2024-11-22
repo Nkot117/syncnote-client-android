@@ -1,6 +1,7 @@
 package com.nkot117.syncnoteclientapp.ui.auth.login
 
 import android.util.Log
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
@@ -67,6 +68,10 @@ class LoginViewModel @Inject constructor(
 
         if(email.isEmpty()) {
             errorMessage["email"] = "メールアドレスを入力してください"
+        }
+
+        if(Patterns.EMAIL_ADDRESS.matcher(email).matches().not()) {
+            errorMessage["email"] = "メールアドレスの形式が正しくありません"
         }
 
         if(password.isEmpty()) {
