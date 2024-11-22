@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
-import com.nkot117.syncnoteclientapp.data.model.auth.LoginData
 import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,7 +41,7 @@ class LoginViewModel @Inject constructor(
 
         viewModelScope.launch {
             val loginData = loginFormData.value
-            val result = authRepository.login(LoginData(email = loginData.email, password = loginData.password))
+            val result = authRepository.login(email = loginData.email, password = loginData.password)
             if(result is Result.Success) {
                 val data = result.data
                 _uiState.value = LoginUiState.Success

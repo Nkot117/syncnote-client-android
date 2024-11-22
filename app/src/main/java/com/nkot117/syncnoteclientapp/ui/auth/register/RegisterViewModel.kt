@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.syncnoteclientapp.data.repository.AuthRepository
-import com.nkot117.syncnoteclientapp.data.model.auth.RegisterData
 import com.nkot117.syncnoteclientapp.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,11 +50,9 @@ class RegisterViewModel @Inject constructor(
         viewModelScope.launch {
             val registerData = registerFormData.value
             val result = authRepository.register(
-                RegisterData(
-                    name = registerData.name,
-                    email = registerData.email,
-                    password = registerData.password
-                )
+                name = registerData.name,
+                email = registerData.email,
+                password = registerData.password
             )
             if (result is Result.Success) {
                 _uiState.value = RegisterUiState.Success
@@ -81,7 +78,7 @@ class RegisterViewModel @Inject constructor(
 
         _registerFormData.value = registerFormData.copy(errorMessage = emptyMap())
 
-        if(name.isEmpty()) {
+        if (name.isEmpty()) {
             errorMessage["name"] = "名前を入力してください"
         }
 

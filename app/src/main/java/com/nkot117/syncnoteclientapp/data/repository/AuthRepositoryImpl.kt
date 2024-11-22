@@ -16,9 +16,9 @@ class AuthRepositoryImpl @Inject constructor(
     private val moshi: Moshi,
     private val tokenManager: TokenManager
 ) : AuthRepository {
-    override suspend fun login(loginData: LoginData): Result<UserData> {
+    override suspend fun login(email: String, password: String): Result<UserData> {
         return try {
-            val requestParams = loginData.toNetworkRequest()
+            val requestParams = LoginData(email, password).toNetworkRequest()
             val response = syncnoteServerApi.login(requestParams)
             if (response.isSuccessful) {
                 response.body()?.let {
@@ -30,24 +30,26 @@ class AuthRepositoryImpl @Inject constructor(
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
                     Result.Failure(it)
-                } ?: Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
+                }
+                    ?: Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             }
         } catch (e: Exception) {
             return Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
         }
     }
 
-    override suspend fun register(registerData: RegisterData): Result<UserData?> {
+    override suspend fun register(name: String, email: String, password: String): Result<Unit> {
         return try {
-            val requestParams = registerData.toNetworkRequest()
+            val requestParams = RegisterData(name, email, password).toNetworkRequest()
             val response = syncnoteServerApi.register(requestParams)
             if (response.isSuccessful) {
-                Result.Success(null)
+                Result.Success(Unit)
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
                     Result.Failure(it)
-                } ?: Result.Failure(ErrorMessage("ユーザー登録に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
+                }
+                    ?: Result.Failure(ErrorMessage("ユーザー登録に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             }
         } catch (e: Exception) {
             return Result.Failure(ErrorMessage("ユーザー登録に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
@@ -71,7 +73,8 @@ class AuthRepositoryImpl @Inject constructor(
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
                     Result.Failure(it)
-                } ?: Result.Failure(ErrorMessage("アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
+                }
+                    ?: Result.Failure(ErrorMessage("アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             }
         } catch (e: Exception) {
             return Result.Failure(ErrorMessage("アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))

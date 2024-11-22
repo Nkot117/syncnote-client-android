@@ -61,9 +61,9 @@ class MemoRepositoryImpl @Inject constructor(
                 response.body()?.let {
                     Result.Success(
                         MemoData(
-                            id = it.memo.id,
-                            title = it.memo.title,
-                            content = it.memo.content
+                            id = it.id,
+                            title = it.title,
+                            content = it.content
                         )
                     )
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
@@ -106,9 +106,9 @@ class MemoRepositoryImpl @Inject constructor(
                 response.body()?.let {
                     Result.Success(
                         MemoData(
-                            id = it.memo.id,
-                            title = it.memo.title,
-                            content = it.memo.content
+                            id = it.id,
+                            title = it.title,
+                            content = it.content
                         )
                     )
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
@@ -143,9 +143,9 @@ class MemoRepositoryImpl @Inject constructor(
                 response.body()?.let {
                     Result.Success(
                         MemoData(
-                            id = it.memo.id,
-                            title = it.memo.title,
-                            content = it.memo.content
+                            id = it.id,
+                            title = it.title,
+                            content = it.content
                         )
                     )
                 } ?: Result.Failure(ErrorMessage("Unknown error"))

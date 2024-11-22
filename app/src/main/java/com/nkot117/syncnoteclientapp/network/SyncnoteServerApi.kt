@@ -4,9 +4,9 @@ import com.nkot117.syncnoteclientapp.network.model.login.LoginRequest
 import com.nkot117.syncnoteclientapp.network.model.login.LoginResponse
 import com.nkot117.syncnoteclientapp.network.model.login.RefreshTokenRequest
 import com.nkot117.syncnoteclientapp.network.model.login.RefreshTokenResponse
-import com.nkot117.syncnoteclientapp.network.model.memo.MemoContent
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoDetailResponse
 import com.nkot117.syncnoteclientapp.network.model.memo.MemoListResponse
+import com.nkot117.syncnoteclientapp.network.model.memo.MemoUpdateRequest
 import com.nkot117.syncnoteclientapp.network.model.register.RegisterRequest
 import retrofit2.Response
 import retrofit2.http.Body
@@ -43,13 +43,13 @@ interface SyncnoteServerApi {
     suspend fun updateMemo(
         @Path("id") id: String,
         @Header("Authorization") token: String,
-        @Body memoContent: MemoContent
+        @Body memoContent: MemoUpdateRequest
     ): Response<MemoDetailResponse>
 
     @POST("api/memo/create")
     suspend fun createMemo(
         @Header("Authorization") token: String,
-        @Body memoContent: MemoContent
+        @Body memoContent: MemoUpdateRequest
     ): Response<MemoDetailResponse>
 
     @DELETE("api/memo/{id}")
