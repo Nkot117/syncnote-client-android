@@ -4,7 +4,9 @@ package com.nkot117.data.di
 import android.content.Context
 import com.nkot117.data.preferences.TokenManager
 import com.nkot117.data.repository.AuthRepository
+import com.nkot117.data.repository.AuthRepositoryImpl
 import com.nkot117.data.repository.MemoRepository
+import com.nkot117.data.repository.MemoRepositoryImpl
 import com.nkot117.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import dagger.Module
@@ -26,7 +28,7 @@ object DataModule {
     @Provides
     @Singleton
     fun provideAuthRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi, tokenManager: TokenManager): AuthRepository {
-        return com.nkot117.data.repository.AuthRepositoryImpl(
+        return AuthRepositoryImpl(
             syncnoteServerApi,
             moshi,
             tokenManager
@@ -36,7 +38,7 @@ object DataModule {
     @Provides
     @Singleton
     fun provideMemoRepository(syncnoteServerApi: SyncnoteServerApi, moshi: Moshi, tokenManager: TokenManager): MemoRepository {
-        return com.nkot117.data.repository.MemoRepositoryImpl(
+        return MemoRepositoryImpl(
             syncnoteServerApi,
             moshi,
             tokenManager

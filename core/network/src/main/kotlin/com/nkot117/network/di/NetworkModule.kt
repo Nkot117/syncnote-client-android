@@ -1,6 +1,5 @@
 package com.nkot117.network.di
 
-import android.content.Context
 import com.nkot117.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
