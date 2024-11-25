@@ -2,7 +2,6 @@ package com.nkot117.syncnoteclientapp.ui.home.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nkot117.data.model.Result
 import com.nkot117.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AccountViewModel @Inject constructor(
-    private val repository: com.nkot117.data.repository.AuthRepository
+    private val repository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<AccountUiState>(AccountUiState.Ideal)
     val uiState = _uiState.asStateFlow()

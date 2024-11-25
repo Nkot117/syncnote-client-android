@@ -2,7 +2,6 @@ package com.nkot117.syncnoteclientapp.ui.home.memo.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nkot117.data.model.Result
 import com.nkot117.data.repository.MemoRepository
 import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemoListViewModel @Inject constructor(
-    private val repository: com.nkot117.data.repository.MemoRepository
+    private val repository: MemoRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<MemoListUiState>(MemoListUiState.Loading)
     val uiState = _uiState.asStateFlow()

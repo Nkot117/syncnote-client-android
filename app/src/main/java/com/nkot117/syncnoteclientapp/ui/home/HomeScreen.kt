@@ -15,9 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.nkot117.syncnoteclientapp.ui.components.CustomTwoButtonDialog
 import com.nkot117.syncnoteclientapp.ui.home.account.AccountScreen
 import com.nkot117.syncnoteclientapp.ui.home.memo.list.MemoListScreen
 import com.nkot117.syncnoteclientapp.ui.home.memo.detail.MemoDetailScreen

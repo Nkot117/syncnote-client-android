@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nkot117.data.repository.AuthRepository
 import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val authRepository: com.nkot117.data.repository.AuthRepository
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Ideal)
     val uiState : StateFlow<LoginUiState> = _uiState.asStateFlow()
