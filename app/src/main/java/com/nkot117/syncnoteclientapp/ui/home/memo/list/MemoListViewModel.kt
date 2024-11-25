@@ -3,6 +3,7 @@ package com.nkot117.syncnoteclientapp.ui.home.memo.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.data.repository.MemoRepository
+import com.nkot117.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,7 @@ class MemoListViewModel @Inject constructor(
         _uiState.value = MemoListUiState.Loading
         viewModelScope.launch {
             val result = repository.getMemoList()
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 _uiState.value = MemoListUiState.Success(memoList = result.data.map {
                     MemoData(
                         id = it.id,
@@ -30,7 +31,7 @@ class MemoListViewModel @Inject constructor(
                     )
                 }, isRefreshing = false)
             } else {
-                val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoListUiState.Error(data.message)
             }
         }
@@ -39,10 +40,10 @@ class MemoListViewModel @Inject constructor(
     fun deleteMemo(id: String) {
         viewModelScope.launch {
             val result = repository.deleteMemo(id)
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 loadMemos()
             } else {
-                val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoListUiState.Error(data.message)
             }
         }
@@ -56,7 +57,7 @@ class MemoListViewModel @Inject constructor(
 
         viewModelScope.launch {
             val result = repository.getMemoList()
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 _uiState.value = MemoListUiState.Success(memoList = result.data.map {
                     MemoData(
                         id = it.id,
@@ -65,7 +66,7 @@ class MemoListViewModel @Inject constructor(
                     )
                 }, isRefreshing = false)
             } else {
-                val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                val data = (result as Result.Failure).errorMessage
                 _uiState.value = MemoListUiState.Error(data.message)
             }
         }

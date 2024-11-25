@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.data.repository.AuthRepository
+import com.nkot117.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.auth.login.model.LoginFormData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,12 +43,12 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             val loginData = loginFormData.value
             val result = authRepository.login(email = loginData.email, password = loginData.password)
-            if(result is com.nkot117.data.model.Result.Success) {
+            if(result is Result.Success) {
                 val data = result.data
                 _uiState.value = LoginUiState.Success
                 Log.d("LoginViewModel", "onLoginClicked: $data")
             } else {
-                val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                val data = (result as Result.Failure).errorMessage
                 _uiState.value = LoginUiState.Error(data.message)
                 Log.d("LoginViewModel", "onLoginClicked: ${data.message}")
             }

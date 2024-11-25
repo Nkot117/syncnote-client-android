@@ -3,6 +3,7 @@ package com.nkot117.syncnoteclientapp.ui.home.memo.detail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.data.repository.MemoRepository
+import com.nkot117.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.home.memo.MemoData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class MemoDetailViewModel @Inject constructor(
         if (id == null) {
             viewModelScope.launch {
                 val result = memoRepository.createMemo("", "")
-                if (result is com.nkot117.data.model.Result.Success) {
+                if (result is Result.Success) {
                     val memoData = MemoData(
                         id = result.data.id,
                         title = result.data.title,
@@ -42,14 +43,14 @@ class MemoDetailViewModel @Inject constructor(
 
                     _uiState.value = MemoDetailUiState.Finished
                 } else {
-                    val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                    val data = (result as Result.Failure).errorMessage
                     _uiState.value = MemoDetailUiState.Error(data.message)
                 }
             }
         } else {
             viewModelScope.launch {
                 val result = memoRepository.getMemoDetail(id)
-                if (result is com.nkot117.data.model.Result.Success) {
+                if (result is Result.Success) {
                     val memoData = MemoData(
                         id = result.data.id,
                         title = result.data.title,
@@ -62,7 +63,7 @@ class MemoDetailViewModel @Inject constructor(
 
                     _uiState.value = MemoDetailUiState.Finished
                 } else {
-                    val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                    val data = (result as Result.Failure).errorMessage
                     _uiState.value = MemoDetailUiState.Error(data.message)
                 }
             }
@@ -91,7 +92,7 @@ class MemoDetailViewModel @Inject constructor(
                 content = memo.content
             )
 
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 initMemoData = memo
             }
         }

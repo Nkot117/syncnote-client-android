@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.data.repository.AuthRepository
+import com.nkot117.data.model.Result
 import com.nkot117.syncnoteclientapp.ui.auth.register.model.RegisterFormData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,11 +55,11 @@ class RegisterViewModel @Inject constructor(
                 email = registerData.email,
                 password = registerData.password
             )
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 _uiState.value = RegisterUiState.Success
                 Log.d("LoginViewModel", "onLoginClicked: Success")
             } else {
-                val data = (result as com.nkot117.data.model.Result.Failure).errorMessage
+                val data = (result as Result.Failure).errorMessage
                 _uiState.value = RegisterUiState.Error(data.message)
                 Log.d("LoginViewModel", "onLoginClicked: ${data.message}")
             }

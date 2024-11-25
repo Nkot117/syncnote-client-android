@@ -3,6 +3,7 @@ package com.nkot117.syncnoteclientapp.ui.home.account
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nkot117.data.repository.AuthRepository
+import com.nkot117.data.model.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,7 +26,7 @@ class AccountViewModel @Inject constructor(
 
         viewModelScope.launch {
             val result = repository.deleteAccount()
-            if (result is com.nkot117.data.model.Result.Success) {
+            if (result is Result.Success) {
                 _uiState.value = AccountUiState.Success
             } else {
                 _uiState.value = AccountUiState.Error
