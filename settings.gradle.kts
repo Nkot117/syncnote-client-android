@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Syncnote Client App"
 include(":app")
+include("core:data")
+include("core:network")
