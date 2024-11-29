@@ -5,6 +5,10 @@ plugins {
     alias(libs.plugins.hilt.android.gradle.plugin)
 }
 
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
+}
+
 android {
     namespace = "com.nkot117.data"
     compileSdk = 34
@@ -36,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":core:network"))
+    testImplementation(project(":core:network"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -58,4 +63,13 @@ dependencies {
     implementation(libs.converter.moshi)
     implementation(libs.logging.interceptor)
 
+    // Kotest
+    testImplementation(libs.kotest.runner.junit5)
+    testImplementation(libs.kotest.assertions.core)
+
+    // Mockk
+    testImplementation(libs.mockk)
+
+    // Coroutines Test
+    testImplementation(libs.kotlinx.coroutines.test)
 }
