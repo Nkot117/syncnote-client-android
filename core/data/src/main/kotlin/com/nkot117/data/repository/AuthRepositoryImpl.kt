@@ -25,7 +25,7 @@ class AuthRepositoryImpl @Inject constructor(
                     tokenManager.saveAccessToken(it.accessToken)
                     tokenManager.saveRefreshToken(it.refreshToken)
                     Result.Success(UserData(name = it.userInfo.name, email = it.userInfo.email))
-                } ?: Result.Failure(ErrorMessage("Unknown error"))
+                } ?: Result.Failure(ErrorMessage("ログインに失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"))
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
