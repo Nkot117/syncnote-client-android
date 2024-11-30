@@ -233,4 +233,78 @@ class AuthRepositoryUnitTest : FunSpec({
             }
         }
     }
+
+    context("deleteAccountのテスト") {
+        // Common Arrange
+        coEvery { mockTokenManager.getAccessToken() } returns "accessToken"
+
+        context("正常系") {
+            test("ユーザー削除が成功した場合、Result.Successが返却されること") {
+                // Arrange
+                coEvery { mockApi.deleteUser(any()) } returns Response.success(null)
+
+                // Act
+                val result = repository.deleteAccount()
+
+                // Assert
+                result.shouldBeInstanceOf<Result.Success<Unit>>()
+                coVerify(exactly = 1) { mockTokenManager.getAccessToken() }
+                coVerify(exactly = 1) { mockApi.deleteUser("Bearer ${mockTokenManager.getAccessToken()}") }
+            }
+        }
+
+        context("異常系") {
+            context("サーバーからエラーが返却") {
+                test("レスポンスボディにエラーメッセージが含まれている場合、含まれているエラーメッセージが返却されること") {
+                    // Arrange
+                    val errorJson = """
+                    {
+                    "message": "error message",
+                    "reason" : "error reason"
+                    }
+                """.trimIndent()
+                    val responseBody = errorJson.toResponseBody("application/json".toMediaType())
+
+                    coEvery { mockApi.deleteUser(any()) } returns Response.error(
+                        500,
+                        responseBody
+                    )
+
+                    // Act
+                    val result = repository.deleteAccount()
+
+                    // Assert
+                    result.shouldBeInstanceOf<Result.Failure>()
+                    result.errorMessage.message shouldBe "error message"
+                    result.errorMessage.reason shouldBe "error reason"
+                }
+
+                test("レスポンスボディがない場合、既定のエラーメッセージが返却されること") {
+                    // Arrange
+                    coEvery { mockApi.deleteUser(any()) } returns Response.error(
+                        500,
+                        mockk(relaxed = true)
+                    )
+
+                    // Act
+                    val result = repository.deleteAccount()
+
+                    // Assert
+                    result.shouldBeInstanceOf<Result.Failure>()
+                    result.errorMessage.message shouldBe "アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"
+                }
+            }
+            context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
+                // Arrange
+                coEvery { mockApi.deleteUser(any()) } throws RuntimeException("Network error")
+
+                // Act
+                val result = repository.deleteAccount()
+
+                // Assert
+                result.shouldBeInstanceOf<Result.Failure>()
+                result.errorMessage.message shouldBe "アカウントの削除に失敗しました。\nしばらく時間をおいてから、もう一度お試しください。"
+            }
+        }
+    }
 })
