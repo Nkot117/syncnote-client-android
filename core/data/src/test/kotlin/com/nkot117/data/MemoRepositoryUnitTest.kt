@@ -187,7 +187,7 @@ class MemoRepositoryUnitTest : FunSpec({
 
             context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
                 // Arrange
-                coEvery {  mockApi.getMemoList(any()) } throws RuntimeException("Network error")
+                coEvery { mockApi.getMemoList(any()) } throws RuntimeException("Network error")
 
                 // Act
                 val result = repository.getMemoList()
@@ -272,12 +272,22 @@ class MemoRepositoryUnitTest : FunSpec({
                     coEvery { mockTokenManager.getAccessToken() } returns expiredToken andThen newToken
 
                     // 期限切れトークンが設定された場合、トークン期限切れエラーを返す
-                    coEvery { mockApi.getMemoDetail(memoInfo.id, "Bearer $expiredToken") } returns Response.error(
+                    coEvery {
+                        mockApi.getMemoDetail(
+                            memoInfo.id,
+                            "Bearer $expiredToken"
+                        )
+                    } returns Response.error(
                         401,
                         responseBody
                     )
                     // 有効トークンが設定された場合、正常のレスポンスを返す
-                    coEvery { mockApi.getMemoDetail(memoInfo.id, "Bearer $newToken") } returns Response.success(
+                    coEvery {
+                        mockApi.getMemoDetail(
+                            memoInfo.id,
+                            "Bearer $newToken"
+                        )
+                    } returns Response.success(
                         getMemoDetailResponse
                     )
 
@@ -291,7 +301,12 @@ class MemoRepositoryUnitTest : FunSpec({
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Success<MemoData>>()
-                    coVerify(exactly = 1) { mockApi.getMemoDetail(memoInfo.id, "Bearer $expiredToken") }
+                    coVerify(exactly = 1) {
+                        mockApi.getMemoDetail(
+                            memoInfo.id,
+                            "Bearer $expiredToken"
+                        )
+                    }
                     coVerify(exactly = 1) { mockApi.getMemoDetail(memoInfo.id, "Bearer $newToken") }
                 }
 
@@ -338,7 +353,12 @@ class MemoRepositoryUnitTest : FunSpec({
 
             context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
                 // Arrange
-                coEvery {  mockApi.getMemoDetail(any(), any()) } throws RuntimeException("Network error")
+                coEvery {
+                    mockApi.getMemoDetail(
+                        any(),
+                        any()
+                    )
+                } throws RuntimeException("Network error")
 
                 // Act
                 val result = repository.getMemoDetail(memoInfo.id)
@@ -364,7 +384,9 @@ class MemoRepositoryUnitTest : FunSpec({
                 val response = createMemoDetailResponse()
 
                 coEvery { mockTokenManager.getAccessToken() } returns "Access Token"
-                coEvery { mockApi.updateMemo(any(), any(), any()) } returns Response.success(response)
+                coEvery { mockApi.updateMemo(any(), any(), any()) } returns Response.success(
+                    response
+                )
 
                 // Act
                 val result = repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
@@ -428,12 +450,24 @@ class MemoRepositoryUnitTest : FunSpec({
                     coEvery { mockTokenManager.getAccessToken() } returns expiredToken andThen newToken
 
                     // 期限切れトークンが設定された場合、トークン期限切れエラーを返す
-                    coEvery { mockApi.updateMemo(requestParams.id, "Bearer $expiredToken", requestParams.toNetworkRequest()) } returns Response.error(
+                    coEvery {
+                        mockApi.updateMemo(
+                            requestParams.id,
+                            "Bearer $expiredToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    } returns Response.error(
                         401,
                         responseBody
                     )
                     // 有効トークンが設定された場合、正常のレスポンスを返す
-                    coEvery { mockApi.updateMemo(requestParams.id, "Bearer $newToken", requestParams.toNetworkRequest()) } returns Response.success(
+                    coEvery {
+                        mockApi.updateMemo(
+                            requestParams.id,
+                            "Bearer $newToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    } returns Response.success(
                         getMemoDetailResponse
                     )
 
@@ -443,12 +477,25 @@ class MemoRepositoryUnitTest : FunSpec({
                     )
 
                     // Act
-                    val result = repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
+                    val result =
+                        repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Success<MemoData>>()
-                    coVerify(exactly = 1) { mockApi.updateMemo(requestParams.id, "Bearer $expiredToken", requestParams.toNetworkRequest()) }
-                    coVerify(exactly = 1) { mockApi.updateMemo(requestParams.id, "Bearer $newToken", requestParams.toNetworkRequest()) }
+                    coVerify(exactly = 1) {
+                        mockApi.updateMemo(
+                            requestParams.id,
+                            "Bearer $expiredToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    }
+                    coVerify(exactly = 1) {
+                        mockApi.updateMemo(
+                            requestParams.id,
+                            "Bearer $newToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    }
                 }
 
 
@@ -468,7 +515,8 @@ class MemoRepositoryUnitTest : FunSpec({
                     )
 
                     // Act
-                    val result = repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
+                    val result =
+                        repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Failure>()
@@ -484,7 +532,8 @@ class MemoRepositoryUnitTest : FunSpec({
                     )
 
                     // Act
-                    val result = repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
+                    val result =
+                        repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Failure>()
@@ -494,7 +543,13 @@ class MemoRepositoryUnitTest : FunSpec({
 
             context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
                 // Arrange
-                coEvery {  mockApi.updateMemo(any(), any(), any()) } throws RuntimeException("Network error")
+                coEvery {
+                    mockApi.updateMemo(
+                        any(),
+                        any(),
+                        any()
+                    )
+                } throws RuntimeException("Network error")
 
                 // Act
                 val result = repository.updateMemo(memoInfo.id, memoInfo.title, memoInfo.content)
@@ -584,12 +639,22 @@ class MemoRepositoryUnitTest : FunSpec({
                     coEvery { mockTokenManager.getAccessToken() } returns expiredToken andThen newToken
 
                     // 期限切れトークンが設定された場合、トークン期限切れエラーを返す
-                    coEvery { mockApi.createMemo("Bearer $expiredToken", requestParams.toNetworkRequest()) } returns Response.error(
+                    coEvery {
+                        mockApi.createMemo(
+                            "Bearer $expiredToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    } returns Response.error(
                         401,
                         responseBody
                     )
                     // 有効トークンが設定された場合、正常のレスポンスを返す
-                    coEvery { mockApi.createMemo("Bearer $newToken", requestParams.toNetworkRequest()) } returns Response.success(
+                    coEvery {
+                        mockApi.createMemo(
+                            "Bearer $newToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    } returns Response.success(
                         getMemoDetailResponse
                     )
 
@@ -603,8 +668,18 @@ class MemoRepositoryUnitTest : FunSpec({
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Success<MemoData>>()
-                    coVerify(exactly = 1) { mockApi.createMemo("Bearer $expiredToken", requestParams.toNetworkRequest()) }
-                    coVerify(exactly = 1) { mockApi.createMemo("Bearer $newToken", requestParams.toNetworkRequest()) }
+                    coVerify(exactly = 1) {
+                        mockApi.createMemo(
+                            "Bearer $expiredToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    }
+                    coVerify(exactly = 1) {
+                        mockApi.createMemo(
+                            "Bearer $newToken",
+                            requestParams.toNetworkRequest()
+                        )
+                    }
                 }
 
 
@@ -650,7 +725,12 @@ class MemoRepositoryUnitTest : FunSpec({
 
             context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
                 // Arrange
-                coEvery {  mockApi.createMemo(any(), any()) } throws RuntimeException("Network error")
+                coEvery {
+                    mockApi.createMemo(
+                        any(),
+                        any()
+                    )
+                } throws RuntimeException("Network error")
 
                 // Act
                 val result = repository.createMemo(memoInfo.title, memoInfo.content)
@@ -708,12 +788,22 @@ class MemoRepositoryUnitTest : FunSpec({
                     coEvery { mockTokenManager.getAccessToken() } returns expiredToken andThen newToken
 
                     // 期限切れトークンが設定された場合、トークン期限切れエラーを返す
-                    coEvery { mockApi.deleteMemo(memoInfo.id, "Bearer $expiredToken") } returns Response.error(
+                    coEvery {
+                        mockApi.deleteMemo(
+                            memoInfo.id,
+                            "Bearer $expiredToken"
+                        )
+                    } returns Response.error(
                         401,
                         responseBody
                     )
                     // 有効トークンが設定された場合、正常のレスポンスを返す
-                    coEvery { mockApi.deleteMemo(memoInfo.id, "Bearer $newToken") } returns Response.success(null)
+                    coEvery {
+                        mockApi.deleteMemo(
+                            memoInfo.id,
+                            "Bearer $newToken"
+                        )
+                    } returns Response.success(null)
 
                     coEvery { mockTokenManager.getRefreshToken() } returns refreshToken
                     coEvery { mockApi.refreshToken(refreshToken.toNetworkRequest()) } returns Response.success(
@@ -725,7 +815,12 @@ class MemoRepositoryUnitTest : FunSpec({
 
                     // Assert
                     result.shouldBeInstanceOf<Result.Success<MemoData>>()
-                    coVerify(exactly = 1) { mockApi.deleteMemo(memoInfo.id, "Bearer $expiredToken") }
+                    coVerify(exactly = 1) {
+                        mockApi.deleteMemo(
+                            memoInfo.id,
+                            "Bearer $expiredToken"
+                        )
+                    }
                     coVerify(exactly = 1) { mockApi.deleteMemo(memoInfo.id, "Bearer $newToken") }
                 }
 
@@ -772,7 +867,12 @@ class MemoRepositoryUnitTest : FunSpec({
 
             context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
                 // Arrange
-                coEvery {  mockApi.deleteMemo(any(), any()) } throws RuntimeException("Network error")
+                coEvery {
+                    mockApi.deleteMemo(
+                        any(),
+                        any()
+                    )
+                } throws RuntimeException("Network error")
 
                 // Act
                 val result = repository.deleteMemo(memoInfo.id)
