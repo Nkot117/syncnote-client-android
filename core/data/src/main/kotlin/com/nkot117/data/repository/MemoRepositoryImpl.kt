@@ -115,6 +115,12 @@ class MemoRepositoryImpl @Inject constructor(
             } else {
                 val errorResponse = convertErrorBody(response.errorBody())
                 errorResponse?.let {
+                    val reason = it.reason
+                    if(reason == "expired") {
+                        return handleExpiredTokenError {
+                            updateMemo(id, title, content)
+                        }
+                    }
                     Result.Failure(it)
                 } ?: Result.Failure(ErrorMessage("Unknown error"))
             }
