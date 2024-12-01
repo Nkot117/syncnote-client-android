@@ -661,5 +661,126 @@ class MemoRepositoryUnitTest : FunSpec({
             }
         }
     }
+    context("deleteMemoのテスト") {
+        context("正常系") {
+            test("メモが削除できた場合、成功結果返却されること") {
+                // Arrange
+                coEvery { mockTokenManager.getAccessToken() } returns "Access Token"
+                coEvery { mockApi.deleteMemo(any(), any()) } returns Response.success(null)
 
+                // Act
+                val result = repository.deleteMemo(memoInfo.id)
+
+                // Assert
+                result.shouldBeInstanceOf<Result.Success<Unit>>()
+            }
+        }
+
+        context("異常系") {
+            test("アクセストークが保存されていない場合は既定のエラーメッセージが返却されること") {
+                // Arrange
+                coEvery { mockTokenManager.getAccessToken() } returns null
+
+                // Act
+                val result = repository.deleteMemo(memoInfo.id)
+
+                // Assert
+                result.shouldBeInstanceOf<Result.Failure>()
+                result.errorMessage.message.shouldBe("Token not found")
+            }
+
+            context("サーバーからエラーが返却") {
+                test("トークン期限切れの場合、トークンリフレッシュ後に再試行されること") {
+                    // Arrange
+                    val expiredToken = "Expired Token"
+                    val refreshToken = RefreshTokenData("Refresh Token")
+                    val newToken = "New Token"
+
+                    val refreshTokenResponse = RefreshTokenResponse(newToken)
+
+                    val errorJson = """{
+                        "message": "Token expired",
+                        "reason": "expired"
+                        }""".trimIndent()
+
+                    val responseBody = errorJson.toResponseBody("application/json".toMediaType())
+
+                    coEvery { mockTokenManager.getAccessToken() } returns expiredToken andThen newToken
+
+                    // 期限切れトークンが設定された場合、トークン期限切れエラーを返す
+                    coEvery { mockApi.deleteMemo(memoInfo.id, "Bearer $expiredToken") } returns Response.error(
+                        401,
+                        responseBody
+                    )
+                    // 有効トークンが設定された場合、正常のレスポンスを返す
+                    coEvery { mockApi.deleteMemo(memoInfo.id, "Bearer $newToken") } returns Response.success(null)
+
+                    coEvery { mockTokenManager.getRefreshToken() } returns refreshToken
+                    coEvery { mockApi.refreshToken(refreshToken.toNetworkRequest()) } returns Response.success(
+                        refreshTokenResponse
+                    )
+
+                    // Act
+                    val result = repository.deleteMemo(memoInfo.id)
+
+                    // Assert
+                    result.shouldBeInstanceOf<Result.Success<MemoData>>()
+                    coVerify(exactly = 1) { mockApi.deleteMemo(memoInfo.id, "Bearer $expiredToken") }
+                    coVerify(exactly = 1) { mockApi.deleteMemo(memoInfo.id, "Bearer $newToken") }
+                }
+
+
+                test("レスポンスボディにエラーメッセージが含まれている場合、含まれているエラーメッセージが返却されること") {
+                    // Arrange
+                    val errorJson = """
+                    {
+                    "message": "error message",
+                    "reason" : "error reason"
+                    }
+                """.trimIndent()
+                    val responseBody = errorJson.toResponseBody("application/json".toMediaType())
+
+                    coEvery { mockApi.deleteMemo(any(), any()) } returns Response.error(
+                        500,
+                        responseBody
+                    )
+
+                    // Act
+                    val result = repository.deleteMemo(memoInfo.id)
+
+                    // Assert
+                    result.shouldBeInstanceOf<Result.Failure>()
+                    result.errorMessage.message shouldBe "error message"
+                    result.errorMessage.reason shouldBe "error reason"
+                }
+
+                test("レスポンスボディがない場合、既定のエラーメッセージが返却されること") {
+                    // Arrange
+                    coEvery { mockApi.deleteMemo(any(), any()) } returns Response.error(
+                        500,
+                        mockk(relaxed = true)
+                    )
+
+                    // Act
+                    val result = repository.deleteMemo(memoInfo.id)
+
+                    // Assert
+                    result.shouldBeInstanceOf<Result.Failure>()
+                    result.errorMessage.message shouldBe "Unknown error"
+                }
+            }
+
+            context("処理中に異常終了した場合、既定のエラーメッセージが返却されること") {
+                // Arrange
+                coEvery {  mockApi.deleteMemo(any(), any()) } throws RuntimeException("Network error")
+
+                // Act
+                val result = repository.deleteMemo(memoInfo.id)
+
+                // Assert
+                result.shouldBeInstanceOf<Result.Failure>()
+                result.errorMessage.message shouldBe "Unknown error"
+            }
+        }
+    }
 })
