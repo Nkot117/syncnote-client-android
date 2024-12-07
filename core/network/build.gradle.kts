@@ -16,6 +16,10 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -23,6 +27,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", "\"${project.property("BASE_URL_RELEASE")}\"")
+        }
+        debug {
+            buildConfigField("String", "BASE_URL", "\"${project.property("BASE_URL_DEBUG")}\"")
         }
     }
     compileOptions {

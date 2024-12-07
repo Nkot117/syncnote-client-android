@@ -1,5 +1,6 @@
 package com.nkot117.network.di
 
+import com.nkot117.network.BuildConfig
 import com.nkot117.network.SyncnoteServerApi
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -37,8 +38,9 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideSyncnoteServiceApi(okHttpClient: OkHttpClient, moshi: Moshi): SyncnoteServerApi {
+        val baseUrl = BuildConfig.BASE_URL
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://syncnote-server.onrender.com/")
+            .baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .build()
