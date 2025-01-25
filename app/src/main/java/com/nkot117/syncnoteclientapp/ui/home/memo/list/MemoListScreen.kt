@@ -80,7 +80,7 @@ fun MemoListScreen(
             LogUtil.d("MemoListScreen Error")
             CustomOneButtonDialog(
                 title = "エラー",
-                message = "メモを取得できませんでした。",
+                message = "メモを取得できませんでした。しばらく時間をおいてから、もう一度お試しください。",
                 button = "リトライ",
                 onDismiss = {
                     viewModel.loadMemos()
