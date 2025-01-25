@@ -51,6 +51,7 @@ sealed class MemoDetailNav(
 @Composable
 fun HomeScreen(
     moveAuthScreen: () -> Unit,
+    logoutAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -79,6 +80,9 @@ fun HomeScreen(
                     },
                     memoAddAction = {
                         navController.navigate(MemoDetailNav.Detail.route)
+                    },
+                    logoutAction = {
+                        logoutAction()
                     }
                 )
             }

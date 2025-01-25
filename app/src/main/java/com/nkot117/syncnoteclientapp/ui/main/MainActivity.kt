@@ -19,6 +19,7 @@ import com.nkot117.syncnoteclientapp.ui.home.HomeScreen
 import com.nkot117.syncnoteclientapp.ui.theme.SyncnoteClientAppTheme
 import com.nkot117.syncnoteclientapp.util.LogUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.log
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -62,6 +63,9 @@ fun SyncnoteClientApp(
                     navController.navigate(MainScreen.Auth.name) {
                         popUpTo(0) { inclusive = true }
                     }
+                    viewModel.logout()
+                },
+                logoutAction = {
                     viewModel.logout()
                 }
             )

@@ -234,7 +234,7 @@ class MemoRepositoryImpl @Inject constructor(
         return if (refreshResult is Result.Success) {
             retryFunction()
         } else {
-            Result.Failure(ErrorMessage("Unknown error"))
+            Result.Failure(ErrorMessage("LoginExpired"))
         }
     }
 }

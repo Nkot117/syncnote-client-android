@@ -44,6 +44,7 @@ fun MemoListScreen(
     viewModel: MemoListViewModel = hiltViewModel(),
     memoClickAction: (id: String) -> Unit,
     memoAddAction: () -> Unit,
+    logoutAction: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LogUtil.d("MemoListScreen Composable")
@@ -78,14 +79,26 @@ fun MemoListScreen(
 
         is MemoListUiState.Error -> {
             LogUtil.d("MemoListScreen Error")
-            CustomOneButtonDialog(
-                title = "エラー",
-                message = "メモを取得できませんでした。しばらく時間をおいてから、もう一度お試しください。",
-                button = "リトライ",
-                onDismiss = {
-                    viewModel.loadMemos()
-                }
-            )
+            val message = (uiState as MemoListUiState.Error).message
+            if (message == "LoginExpired") {
+                CustomOneButtonDialog(
+                    title = "エラー",
+                    message = "ログイン期間の有効期限が切れました。再度ログインしてください。",
+                    button = "OK",
+                    onDismiss = {
+                        logoutAction()
+                    }
+                )
+            } else {
+                CustomOneButtonDialog(
+                    title = "エラー",
+                    message = "メモを取得できませんでした。しばらく時間をおいてから、もう一度お試しください。",
+                    button = "リトライ",
+                    onDismiss = {
+                        viewModel.loadMemos()
+                    }
+                )
+            }
         }
     }
 }
