@@ -15,5 +15,5 @@
 local.properties
 .idea
 gradle.properties
-key_store
-key_store.jks
+app/key_store
+app/key_store.jks
